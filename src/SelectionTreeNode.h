@@ -34,8 +34,8 @@ public:
         if (root == NULL) return nullptr;
 
         LoanBookHeapNode* copy = new LoanBookHeapNode();
-        copy->getLeftChild() = deepCopy(root->getLeftChild())
-        copy->getRightChild() = deepCopy(root->getLeftChild())
+        copy->getLeftChild() = deepCopy(root->getLeftChild());
+        copy->getRightChild() = deepCopy(root->getLeftChild());
 
         return copy;
     } 
@@ -44,5 +44,5 @@ public:
     SelectionTreeNode* getLeftChild() { return pLeft; }
     SelectionTreeNode* getRightChild() { return pRight; }
     SelectionTreeNode* getParent() { return pParent; }
-    LoanBookHeap* getHeap() { return hNode; }
-}
+    LoanBookHeap* getHeap() { return hRoot; }
+};

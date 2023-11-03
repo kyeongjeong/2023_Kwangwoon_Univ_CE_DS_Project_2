@@ -18,7 +18,7 @@ public:
 		this->order = order;
 		this->fout = fout;
 	}
-	~BpTree();
+	~BpTree() {};
 	/* essential */
 	bool		Insert(LoanBookData* newData);
 	bool		excessDataNode(BpTreeNode* pDataNode);

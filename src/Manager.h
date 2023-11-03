@@ -8,11 +8,11 @@ private:
 	char* cmd;
 	BpTree* bptree;
 	SelectionTree* stree;
-	BpTree* bptree;
+	int bpOrder;
 public:
 	Manager(int bpOrder)	//constructor
 	{
-		/* You must fill here */
+		this->bpOrder = bpOrder;
 	}
 
 
@@ -26,7 +26,7 @@ public:
 	
 
 	void run(const char* command);
-	bool LOAD();
+	bool LOAD(BpTree* bptree);
 	bool ADD();
 
 	bool SEARCH_BP_BOOK(string book);

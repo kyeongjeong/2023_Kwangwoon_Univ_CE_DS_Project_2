@@ -13,7 +13,7 @@ private:
 public:
     SelectionTree(ofstream* fout) {
         this->root = NULL;
-        this->fout = fout
+        this->fout = fout;
     }
     ~SelectionTree() {
 
@@ -25,4 +25,4 @@ public:
     bool Insert(LoanBookData* newData);
     bool Delete();
     bool printBookData(int bookCode);
-}
+};

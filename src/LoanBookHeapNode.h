@@ -29,4 +29,4 @@ public:
     LoanBookHeapNode* getLeftChild() { return pLeft; }
     LoanBookHeapNode* getRightChild() { return pRight; }
     LoanBookHeapNode* getParent() { return pParent; }
-}
+};

@@ -2,6 +2,7 @@
 #define _BPTREEINDEXNODE_H_
 
 #include "BpTreeNode.h"
+
 //template <class T>
 class BpTreeIndexNode : public BpTreeNode {
 private:
