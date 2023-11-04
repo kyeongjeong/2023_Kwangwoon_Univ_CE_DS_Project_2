@@ -50,7 +50,28 @@ bool Manager::LOAD(BpTree* bptree)
 		LoanBookData *newData = new LoanBookData();
 		newData->setBookData(name, code, author, year);
 
-		bptree->Insert(newData);
+		bool isLoanAvail = true;
+		if((code == 000) && (loan_count == 3))
+			isLoanAvail = false;
+		else if((code == 100) && (loan_count == 3))
+			isLoanAvail = false;
+		else if((code == 200) && (loan_count == 3))
+			isLoanAvail = false;
+		else if((code == 300) && (loan_count == 4))
+			isLoanAvail = false;
+		else if((code == 400) && (loan_count == 4))
+			isLoanAvail = false;
+		else if((code == 500) && (loan_count == 2))
+			isLoanAvail = false;
+		else if((code == 600) && (loan_count == 2))
+			isLoanAvail = false;
+		else if((code == 700) && (loan_count == 2))
+			isLoanAvail = false;
+		else
+			return false;
+
+		if(isLoanAvail == true)
+			bptree->Insert(newData);
     }
 
 	return true;

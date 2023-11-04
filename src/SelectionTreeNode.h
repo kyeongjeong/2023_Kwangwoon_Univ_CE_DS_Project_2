@@ -34,8 +34,8 @@ public:
         if (root == NULL) return nullptr;
 
         LoanBookHeapNode* copy = new LoanBookHeapNode();
-        copy->getLeftChild() = deepCopy(root->getLeftChild());
-        copy->getRightChild() = deepCopy(root->getLeftChild());
+        // copy->getLeftChild() = deepCopy(root->getLeftChild());
+        // copy->getRightChild() = deepCopy(root->getLeftChild());
 
         return copy;
     } 
