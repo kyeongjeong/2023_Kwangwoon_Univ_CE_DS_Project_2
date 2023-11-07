@@ -37,7 +37,7 @@ bool Manager::LOAD(BpTree* bptree)
 	if(!floan) 
 		return false;
 
-	if(bptree->getRoot() == NULL)
+	if(bptree->getRoot() != NULL)
 		return false;
 	
 	string name, author;
@@ -67,11 +67,10 @@ bool Manager::LOAD(BpTree* bptree)
 			isLoanAvail = false;
 		else if((code == 700) && (loan_count == 2))
 			isLoanAvail = false;
-		else
-			return false;
 
 		if(isLoanAvail == true)
 			bptree->Insert(newData);
+		bptree->searchBook("non");
     }
 
 	return true;

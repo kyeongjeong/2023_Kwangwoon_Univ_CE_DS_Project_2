@@ -4,9 +4,3 @@ ggg 200 werg    2002    0
 aaa 500 lkjio   2023    2
 ddd 700 mnbvv   1993    0
 hhh 300 poilk   2015    2
-eee 100 fgh 2008    0
-ccc 600 lddi    1983    0
-lll 200 ysmxd   2019    3
-kkk 500 afxm    2005    0
-iii 400 oiur    1885    3
-jjj 000 zvxhh   1976    0
