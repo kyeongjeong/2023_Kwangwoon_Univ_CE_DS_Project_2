@@ -32,6 +32,7 @@ public:
 	bool searchBook(string name);
 	bool searchRange(string start, string end);
 
+	bool printBP();
 };
 
 #endif

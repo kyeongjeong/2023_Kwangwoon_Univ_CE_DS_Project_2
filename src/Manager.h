@@ -1,6 +1,8 @@
 #pragma once
 #include "SelectionTree.h"
 #include "BpTree.h"
+#include <string>
+#include <vector>
 
 class Manager
 {
@@ -26,7 +28,7 @@ public:
 	
 
 	void run(const char* command);
-	bool LOAD(BpTree* bptree);
+	bool LOAD();
 	bool ADD();
 
 	bool SEARCH_BP_BOOK(string book);
