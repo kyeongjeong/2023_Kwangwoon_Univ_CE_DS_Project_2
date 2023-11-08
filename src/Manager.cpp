@@ -3,7 +3,7 @@
 void Manager::run(const char* command) 
 {
 	fin.open(command);
-	flog.open("log.txt");
+	flog.open("log.txt", ios::app);
 	if(!fin)
 	{
 		flog << "File Open Error" << endl;
@@ -96,7 +96,7 @@ bool Manager::LOAD()
 		if(isLoanAvail == true)
 			bptree->Insert(newData);
     }
-	printSuccessCode();
+	printSuccessCode("LOAD");
 	return true;
 }
 
@@ -123,6 +123,7 @@ bool Manager::PRINT_BP()
 	flog << "========PRINT_BP========" << endl;
 	bptree->printBP();
 	flog << "========================" << endl << endl;
+	return true;
 }
 
 bool Manager::PRINT_ST() 
@@ -141,8 +142,8 @@ void Manager::printErrorCode(int n) {				//ERROR CODE PRINT
 	flog << "=======================" << endl << endl;
 }
 
-void Manager::printSuccessCode() {//SUCCESS CODE PRINT 
-	flog << "=======================" << endl;
+void Manager::printSuccessCode(string command) {//SUCCESS CODE PRINT 
+	flog << "=========" << command << "=========" << endl;
 	flog << "Success" << endl;
 	flog << "=======================" << endl << endl;
 }
