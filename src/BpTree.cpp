@@ -11,7 +11,42 @@ bool BpTree::Insert(LoanBookData* newData) {
 		return true;
 	}
 
-	else if(root->getMostLeftChild() == NULL) {
+	BpTreeNode* pCur = root;
+	map <string, LoanBookData*>::iterator mIter;
+	while(pCur->getMostLeftChild() != NULL) 
+		pCur = pCur->getMostLeftChild();
+	
+	while(pCur != NULL) {
+
+		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+
+			if(mIter->first == newData->getName()) {
+					
+					mIter->second->updateCount();
+
+					if((mIter->second->getCode() == 000) && (mIter->second->getLoanCount() == 3))
+						;
+					else if((mIter->second->getCode() == 100) && (mIter->second->getLoanCount() == 3))
+						;
+					else if((mIter->second->getCode() == 200) && (mIter->second->getLoanCount() == 3))
+						;
+					else if((mIter->second->getCode() == 300) && (mIter->second->getLoanCount() == 4))
+						;
+					else if((mIter->second->getCode() == 400) && (mIter->second->getLoanCount() == 4))
+						;
+					else if((mIter->second->getCode() == 500) && (mIter->second->getLoanCount() == 2))
+						;
+					else if((mIter->second->getCode() == 600) && (mIter->second->getLoanCount() == 2))
+						;
+					else if((mIter->second->getCode() == 700) && (mIter->second->getLoanCount() == 2))
+						;
+				return true;
+			}
+		}
+		pCur = pCur->getNext();
+	}
+
+	if(root->getMostLeftChild() == NULL) {
 
 		root->insertDataMap(newData->getName(), newData);
 		if(excessDataNode(root))
@@ -21,7 +56,7 @@ bool BpTree::Insert(LoanBookData* newData) {
 
 	else {
 
-		BpTreeNode* pCur = searchDataNode(newData->getName());
+		pCur = searchDataNode(newData->getName());
 		pCur->insertDataMap(newData->getName(), newData);
 	
 		if(excessDataNode(pCur))
@@ -163,8 +198,7 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
 		}
 		newIndexNode->setParent(upIndexNode);
 		pIndexNode->setParent(upIndexNode);
-		newIndexNode->setMostLeftChild(pIndexNode->getMostLeftChild());
-		// 여기 뭔가 하나 더 들어가야 하는데, 그냥 디버깅하면서 알아볼랭
+		newIndexNode->setMostLeftChild(pIndexNode->getMostLeftChild());	
 
 		if (upIndexMap.size() > (order - 1))
 			splitIndexNode(upIndexNode);	
@@ -195,12 +229,86 @@ BpTreeNode* BpTree::searchDataNode(string name) {
 	return pCur;
 }
 
-bool BpTree::searchBook(string name) {
+bool BpTree::searchBook(string name, bool isPrint) {
 
+	BpTreeNode* pCur = root;
+	map <string, LoanBookData*>::iterator mIter;
+
+	while(pCur->getMostLeftChild() != NULL) 
+		pCur = pCur->getMostLeftChild();
+	
+	while(pCur != NULL) {
+
+		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+
+			if(mIter->first == name) {
+
+				if(isPrint == true) {
+					*fout << "========SEARCH_BP========" << endl;
+					*fout << mIter->second->getName() << "/" << mIter->second->getCode();
+					if(mIter->second->getCode() == 0)
+						*fout << "00";
+					*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+					*fout << "=========================" << endl;
+				}
+				return true;
+			}
+		}
+		pCur = pCur->getNext();
+	}
+	return false;
 }
 
 bool BpTree::searchRange(string start, string end) {
 	
+	BpTreeNode* pCur = root;
+	map <string, LoanBookData*>::iterator mIter;
+	bool isPrint = false;
+	string bookName, firstWord;
+
+	while(pCur->getMostLeftChild() != NULL) 
+		pCur = pCur->getMostLeftChild();
+	
+	while(pCur != NULL) {
+
+		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+
+			bookName = mIter->first;
+			firstWord = bookName.substr(0, 1);
+			if((firstWord.compare(start) >= 0) && (firstWord.compare(end) <= 0)) {
+				isPrint = true;
+				break;
+			}
+		}
+		if (isPrint == true)
+			break;
+		pCur = pCur->getNext();
+	}
+	if(isPrint == false)
+		return isPrint;
+
+	pCur = root;
+	while(pCur->getMostLeftChild() != NULL) 
+		pCur = pCur->getMostLeftChild();
+
+	*fout << "========SEARCH_BP========" << endl;
+	while(pCur != NULL) {
+
+		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+
+			bookName = mIter->first;
+			firstWord = bookName.substr(0, 1);
+			if((firstWord.compare(start) >= 0) && (firstWord.compare(end) <= 0)) {
+				*fout << mIter->second->getName() << "/" << mIter->second->getCode();
+				if(mIter->second->getCode() == 0)
+					*fout << "00";
+				*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+			}
+		}
+		pCur = pCur->getNext();
+	}
+	*fout << "=========================" << endl;
+	return isPrint;
 }
 
 bool BpTree::printBP() {

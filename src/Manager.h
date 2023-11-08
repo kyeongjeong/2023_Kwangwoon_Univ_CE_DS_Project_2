@@ -31,8 +31,7 @@ public:
 	bool LOAD();
 	bool ADD();
 
-	bool SEARCH_BP_BOOK(string book);
-	bool SEARCH_BP_RANGE(string start, string end);
+	bool SEARCH_BP();
 
 	bool PRINT_BP();
 	bool PRINT_ST();

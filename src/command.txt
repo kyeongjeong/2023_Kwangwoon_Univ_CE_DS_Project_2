@@ -1,3 +1,6 @@
 LOAD
 PRINT_BP
+SEARCH_BP	eee
+SEARCH_BP	a	c
+ADD	bbb 1	000	sdff	1958
 aa

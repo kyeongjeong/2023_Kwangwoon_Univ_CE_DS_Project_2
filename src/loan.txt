@@ -10,3 +10,5 @@ lll	200	ysmxd	2019	3
 kkk	500 	afxm	2005	0
 iii	400 	oiur	1885	3
 jjj	000 	zvxhh	1976	0
+abc	400	sdfkj	2012	2
+cdc	300	pori	1889	1

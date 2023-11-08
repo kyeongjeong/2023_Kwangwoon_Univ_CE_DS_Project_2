@@ -29,7 +29,7 @@ public:
 	BpTreeNode* getRoot() { return root; }
 	BpTreeNode* searchDataNode(string name);
 
-	bool searchBook(string name);
+	bool searchBook(string name, bool isPrint);
 	bool searchRange(string start, string end);
 
 	bool printBP();
