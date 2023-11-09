@@ -31,9 +31,12 @@ public:
 
     // function to output heap data stored in LoanBookHeap according to book classification code
     LoanBookHeapNode* deepCopy(LoanBookHeapNode* root) {
+        
         if (root == NULL) return nullptr;
 
         LoanBookHeapNode* copy = new LoanBookHeapNode();
+        copy->setLeftChild(deepCopy(root->getLeftChild()));
+        copy->setRightChild(deepCopy(root->getRightChild()));
         // copy->getLeftChild() = deepCopy(root->getLeftChild());
         // copy->getRightChild() = deepCopy(root->getLeftChild());
 

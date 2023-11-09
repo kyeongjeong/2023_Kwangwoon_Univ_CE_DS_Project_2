@@ -1,11 +1,13 @@
 #pragma once
 #include "LoanBookData.h"
 #include "LoanBookHeapNode.h"
+#include <queue>
 
 class LoanBookHeap
 {
 private:
     LoanBookHeapNode* root;
+    queue<int> que;
 
 public:
     LoanBookHeap() {
