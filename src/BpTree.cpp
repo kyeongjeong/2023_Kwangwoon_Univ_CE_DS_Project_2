@@ -11,6 +11,7 @@ bool BpTree::Insert(LoanBookData* newData) {
 		return true;
 	}
 
+	// 왼쪽으로 다 내려간 뒤에, 아래로 내려가기
 	BpTreeNode* pCur = root;
 	map <string, LoanBookData*>::iterator mIter;
 	while(pCur->getMostLeftChild() != NULL) 
@@ -24,22 +25,38 @@ bool BpTree::Insert(LoanBookData* newData) {
 					
 					mIter->second->updateCount();
 
-					if((mIter->second->getCode() == 000) && (mIter->second->getLoanCount() == 3))
-						;
-					else if((mIter->second->getCode() == 100) && (mIter->second->getLoanCount() == 3))
-						;
-					else if((mIter->second->getCode() == 200) && (mIter->second->getLoanCount() == 3))
-						;
-					else if((mIter->second->getCode() == 300) && (mIter->second->getLoanCount() == 4))
-						;
-					else if((mIter->second->getCode() == 400) && (mIter->second->getLoanCount() == 4))
-						;
-					else if((mIter->second->getCode() == 500) && (mIter->second->getLoanCount() == 2))
-						;
-					else if((mIter->second->getCode() == 600) && (mIter->second->getLoanCount() == 2))
-						;
-					else if((mIter->second->getCode() == 700) && (mIter->second->getLoanCount() == 2))
-						;
+					if((mIter->second->getCode() == 000) && (mIter->second->getLoanCount() == 3)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
+					else if((mIter->second->getCode() == 100) && (mIter->second->getLoanCount() == 3)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
+					else if((mIter->second->getCode() == 200) && (mIter->second->getLoanCount() == 3)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
+					else if((mIter->second->getCode() == 300) && (mIter->second->getLoanCount() == 4)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
+					else if((mIter->second->getCode() == 400) && (mIter->second->getLoanCount() == 4)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
+					else if((mIter->second->getCode() == 500) && (mIter->second->getLoanCount() == 2)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
+					else if((mIter->second->getCode() == 600) && (mIter->second->getLoanCount() == 2)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
+					else if((mIter->second->getCode() == 700) && (mIter->second->getLoanCount() == 2)) {
+						Delete(pCur, mIter->first);
+						return false;
+					}
 				return true;
 			}
 		}
@@ -329,4 +346,9 @@ bool BpTree::printBP() {
 		pCur = pCur->getNext();
 	}
 	return true;	
+}
+
+bool BpTree::Delete(BpTreeNode* dNode, string dName) {
+
+	*fout << "delete " << dName << endl;
 }

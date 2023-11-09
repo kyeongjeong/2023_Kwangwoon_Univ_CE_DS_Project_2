@@ -3,31 +3,36 @@
 bool SelectionTree::Insert(LoanBookData* newData) {
 
     int treeHeight = 4;
+    bool isFirst = false;
     
     if(root == NULL) {
 
         SelectionTreeNode* newSelNode = new SelectionTreeNode();
         root = newSelNode;
-        createSelTree(root, treeHeight);
+        createSelTree(root, treeHeight-1);
+        isFirst = true;
     }
 
+    int direction[3] = {((newData->getCode() / 100) / 4), (((newData->getCode() / 100) % 4) / 2), (((newData->getCode() / 100) % 4) % 2)};
     SelectionTreeNode* pCur = root;
-    for (int i = 2; i >= 0; i--) {
+    for (int i = 0; i < 3; i++) {
 
-        int direction = (newData->getCode() >> (2 * i)) & 0x3;
-
-        if (direction == 0 && pCur->getLeftChild() != NULL) 
+        if (direction[i] == 0 && pCur->getLeftChild() != NULL) 
             pCur = pCur->getLeftChild();
 
-        else if (direction == 1 && pCur->getRightChild() != NULL) 
+        else if (direction[i] == 1 && pCur->getRightChild() != NULL) 
             pCur = pCur->getRightChild();
 
         else 
             return false;
     }
 
-    // pCur이 가리키는 min heap에 newData 삽입
-    // heap 정렬을 통해 수정된 root 값을 pCur에서 세팅하도록 설정
+    if(pCur->getHeap() == NULL) {
+        LoanBookHeap* newHeap = new LoanBookHeap;
+        pCur->setHeap(newHeap);
+    }
+    pCur->getHeap()->Insert(newData);
+    pCur->setBookData(pCur->getHeap()->getRoot()->getBookData());
 
     while(pCur != root) {
 
@@ -39,6 +44,7 @@ bool SelectionTree::Insert(LoanBookData* newData) {
         if((pCur->getBookData() == NULL) || (childData->getName() < pCur->getBookData()->getName()))
             pCur->setBookData(childData);
     }
+    cout << root->getBookData()->getName() << endl;
 }
 
 bool SelectionTree::Delete() {
@@ -47,6 +53,35 @@ bool SelectionTree::Delete() {
 
 bool SelectionTree::printBookData(int bookCode) {
 
+    int direction[3] = {((bookCode / 100) / 4), (((bookCode / 100) % 4) / 2), (((bookCode / 100) % 4) % 2)};
+    SelectionTreeNode* pCur = root;
+
+    for (int i = 0; i < 3; i++) {
+
+        if (direction[i] == 0 && pCur->getLeftChild() != NULL) 
+            pCur = pCur->getLeftChild();
+
+        else if (direction[i] == 1 && pCur->getRightChild() != NULL) 
+            pCur = pCur->getRightChild();
+
+        else 
+            return false;
+    }
+
+    if(pCur->getHeap()->getRoot() == NULL)
+        return false;
+
+    pCur->getDataMap().clear();
+    traversalHeap(pCur->getHeap()->getRoot(), pCur);
+    map<string, LoanBookData*> pMap = pCur->getDataMap();
+
+    *fout << "========PRiNT_ST========" << endl;
+    map<string, LoanBookData*>::iterator mIter;
+    for(mIter = pMap.begin(); mIter != pMap.end(); mIter++) 
+        *fout << mIter->second->getName() << "/" << mIter->second->getCode() << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+    *fout << "========================" << endl;
+
+    return true;
 }
 
 void SelectionTree::createSelTree(SelectionTreeNode* root, int treeHeight) {
@@ -64,4 +99,17 @@ void SelectionTree::createSelTree(SelectionTreeNode* root, int treeHeight) {
     
     createSelTree(root->getLeftChild(), treeHeight-1);
     createSelTree(root->getRightChild(), treeHeight-1);
+}
+
+LoanBookHeapNode* SelectionTree::traversalHeap(LoanBookHeapNode* pHeap, SelectionTreeNode* pCur) {
+
+    if (pHeap == NULL) 
+        return NULL;
+
+    traversalHeap(pHeap->getLeftChild(), pCur);
+    if(pHeap != NULL)
+        pCur->setDataMap(pHeap->getBookData()->getName(), pHeap->getBookData());
+    traversalHeap(pHeap->getRightChild(), pCur);
+
+    return pHeap;
 }

@@ -1,6 +1,19 @@
 LOAD
 PRINT_BP
-SEARCH_BP	eee
-SEARCH_BP	a	c
-ADD	bbb 1	000	sdff	1958
+ADD	kkk	000 	afxm	2005
+ADD	iii	100 	oiur	1885
+ADD	hhh	200 	poilk	2015
+ADD	fff	000	ariel	1654
+ADD	ccc	100	lddi 	1983
+ADD	ggg	200 	werg	2002
+ADD	eee	000	fgh	2008
+ADD	bbb	100	sdff	1958
+ADD	lll	200	ysmxd	2019
+ADD	aaa	000 	lkjio	2023
+ADD	ddd	100 	mnbvv	1993
+ADD	jjj	200 	zvxhh	1976
+PRINT_BP
+PRINT_ST	000
+PRINT_ST	100
+PRINT_ST	200
 aa

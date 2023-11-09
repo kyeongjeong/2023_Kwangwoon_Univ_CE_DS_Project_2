@@ -33,6 +33,7 @@ public:
 	bool searchRange(string start, string end);
 
 	bool printBP();
+	bool Delete(BpTreeNode* dNode, string dName);
 };
 
 #endif

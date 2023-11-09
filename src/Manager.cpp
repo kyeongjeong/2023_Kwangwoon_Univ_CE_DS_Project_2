@@ -11,6 +11,7 @@ void Manager::run(const char* command)
 	}
 
 	bptree = new BpTree(&flog, bpOrder);
+	stree = new SelectionTree(&flog);
 
 	while (!fin.eof())
 	{
@@ -32,6 +33,10 @@ void Manager::run(const char* command)
 		else if (cmd == "PRINT_BP") {
 			if(!PRINT_BP())
 				printErrorCode(400);
+		}
+		else if(cmd == "PRINT_ST") {
+			if(!PRINT_ST())
+				printErrorCode(500);
 		}
 		else {
 			printErrorCode(700);
@@ -102,6 +107,8 @@ bool Manager::LOAD()
 
 		if(isLoanAvail == true)
 			bptree->Insert(newData);
+		else
+			stree->Insert(newData);
     }
 	printSuccessCode("LOAD");
 	return true;
@@ -136,7 +143,8 @@ bool Manager::ADD()
 
 	LoanBookData *newData = new LoanBookData();
 	newData->setBookData(name, code, author, year, 0);
-	bptree->Insert(newData);
+	if(!bptree->Insert(newData))
+		stree->Insert(newData);
 
 	flog << "=========ADD=========" << endl;
 	flog << newData->getName() << "/" << newData->getCode();
@@ -197,7 +205,35 @@ bool Manager::PRINT_BP()
 
 bool Manager::PRINT_ST() 
 {
+	string line;
+	getline(fin, line);
+	if (!line.empty() && line.back() == '\r') 
+        line.pop_back();
 
+	vector<string> tokens;
+	char* token = strtok(&line[0], "\t");
+
+    while (token != NULL) {
+        tokens.push_back(token);
+        token = strtok(NULL, "\t");
+    }
+
+	int code;
+    if (tokens.size() == 1) 
+        code = stoi(tokens[0]);
+	else
+		return false;
+
+	if ((code != 0) && (code != 100) && (code != 200) && (code != 300) && (code != 400) && (code != 500) && (code != 600) && (code != 700))
+		return false;
+	
+	if(stree->getRoot() == NULL)
+		return false;
+	
+	if(!stree->printBookData(code))
+		return false;
+
+	return true;
 }
 
 bool Manager::DELETE() 
@@ -216,4 +252,3 @@ void Manager::printSuccessCode(string command) {//SUCCESS CODE PRINT
 	flog << "Success" << endl;
 	flog << "=======================" << endl << endl;
 }
-

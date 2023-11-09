@@ -27,4 +27,5 @@ public:
     bool printBookData(int bookCode);
 
     void createSelTree(SelectionTreeNode* root, int treeHeight);
+    LoanBookHeapNode* traversalHeap(LoanBookHeapNode* pHeap, SelectionTreeNode* pCur);
 };

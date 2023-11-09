@@ -1,14 +1,12 @@
-fff 12	400	ariel	1654	1
-bbb 1	000	sdff	1958	0
-ggg	200 	werg	2002	0
-aaa	500 	lkjio	2023	2
-ddd	700 	mnbvv	1993	0
-hhh 456	300 	poilk	2015	2
-eee	100	fgh	2008	0
-ccc	600	lddi 	1983	0
-lll	200	ysmxd	2019	3
-kkk	500 	afxm	2005	0
-iii	400 	oiur	1885	3
-jjj	000 	zvxhh	1976	0
-abc	400	sdfkj	2012	2
-cdc	300	pori	1889	1
+fff	000	ariel	1654	2
+bbb	100	sdff	1958	2
+ggg	200 	werg	2002	2
+aaa	000 	lkjio	2023	2
+ddd	100 	mnbvv	1993	2
+hhh	200 	poilk	2015	2
+eee	000	fgh	2008	2
+ccc	100	lddi 	1983	2
+lll	200	ysmxd	2019	2
+kkk	000 	afxm	2005	2
+iii	100 	oiur	1885	2
+jjj	200 	zvxhh	1976	2
