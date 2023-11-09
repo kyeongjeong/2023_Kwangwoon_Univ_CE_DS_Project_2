@@ -7,7 +7,7 @@ class LoanBookHeap
 {
 private:
     LoanBookHeapNode* root;
-    queue<int> que;
+    queue<LoanBookHeapNode*> que;
 
 public:
     LoanBookHeap() {
