@@ -11,11 +11,12 @@ bool BpTree::Insert(LoanBookData* newData) {
 		return true;
 	}
 
-	// 왼쪽으로 다 내려간 뒤에, 아래로 내려가기
 	BpTreeNode* pCur = root;
 	map <string, LoanBookData*>::iterator mIter;
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
+	while(pCur->getIndexMap() != NULL)
+		pCur = pCur->getIndexMap()->begin()->second;
 	
 	while(pCur != NULL) {
 
@@ -230,6 +231,8 @@ BpTreeNode* BpTree::searchDataNode(string name) {
 
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
+	while(pCur->getIndexMap() != NULL)
+		pCur = pCur->getIndexMap()->begin()->second;
 	pNext = pCur;
 
 	while(pCur != NULL) {
@@ -253,6 +256,8 @@ bool BpTree::searchBook(string name, bool isPrint) {
 
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
+	while(pCur->getIndexMap() != NULL)
+		pCur = pCur->getIndexMap()->begin()->second;
 	
 	while(pCur != NULL) {
 
@@ -285,6 +290,8 @@ bool BpTree::searchRange(string start, string end) {
 
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
+	while(pCur->getIndexMap() != NULL)
+		pCur = pCur->getIndexMap()->begin()->second;
 	
 	while(pCur != NULL) {
 
@@ -307,6 +314,8 @@ bool BpTree::searchRange(string start, string end) {
 	pCur = root;
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
+	while(pCur->getIndexMap() != NULL)
+		pCur = pCur->getIndexMap()->begin()->second;
 
 	*fout << "========SEARCH_BP========" << endl;
 	while(pCur != NULL) {
@@ -333,6 +342,8 @@ bool BpTree::printBP() {
 	BpTreeNode* pCur = root;
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
+	while(pCur->getIndexMap() != NULL)
+		pCur = pCur->getIndexMap()->begin()->second;
 	
 	map <string, LoanBookData*>::iterator mIter;
 	while(pCur != NULL) {

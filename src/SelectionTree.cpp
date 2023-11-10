@@ -27,10 +27,6 @@ bool SelectionTree::Insert(LoanBookData* newData) {
             return false;
     }
 
-    if(pCur->getHeap() == NULL) {
-        LoanBookHeap* newHeap = new LoanBookHeap;
-        pCur->setHeap(newHeap);
-    }
     pCur->getHeap()->Insert(newData);
     pCur->setBookData(pCur->getHeap()->getRoot()->getBookData());
 
@@ -79,26 +75,29 @@ bool SelectionTree::printBookData(int bookCode) {
     map<string, LoanBookData*>::iterator mIter;
     for(mIter = pMap.begin(); mIter != pMap.end(); mIter++) 
         *fout << mIter->second->getName() << "/" << mIter->second->getCode() << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
-    *fout << "========================" << endl;
+    *fout << "========================" << endl << endl;
 
     return true;
 }
 
-void SelectionTree::createSelTree(SelectionTreeNode* root, int treeHeight) {
+void SelectionTree::createSelTree(SelectionTreeNode* pCur, int treeHeight) {
 
-    if (treeHeight == 0) 
+    if (treeHeight == 0) {
+        LoanBookHeap* newHeap = new LoanBookHeap;
+        pCur->setHeap(newHeap);
         return; 
+    }
     
     SelectionTreeNode* newLeftSelNode = new SelectionTreeNode();
-    root->setLeftChild(newLeftSelNode);
-    newLeftSelNode->setParent(root);
+    pCur->setLeftChild(newLeftSelNode);
+    newLeftSelNode->setParent(pCur);
 
     SelectionTreeNode* newRightSelNode = new SelectionTreeNode();
-    root->setRightChild(newRightSelNode);
-    newRightSelNode->setParent(root);
+    pCur->setRightChild(newRightSelNode);
+    newRightSelNode->setParent(pCur);
     
-    createSelTree(root->getLeftChild(), treeHeight-1);
-    createSelTree(root->getRightChild(), treeHeight-1);
+    createSelTree(pCur->getLeftChild(), treeHeight-1);
+    createSelTree(pCur->getRightChild(), treeHeight-1);
 }
 
 LoanBookHeapNode* SelectionTree::traversalHeap(LoanBookHeapNode* pHeap, SelectionTreeNode* pCur) {

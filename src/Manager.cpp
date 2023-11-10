@@ -151,7 +151,7 @@ bool Manager::ADD()
 	if(newData->getCode() == 0)
 		flog << "00";
 	flog << "/" << newData->getAuthor() << "/" << newData->getYear() << endl;
-	flog << "======================" << endl;
+	flog << "======================" << endl << endl;
 	return true;
 }
 
