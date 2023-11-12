@@ -38,6 +38,10 @@ void Manager::run(const char* command)
 			if(!PRINT_ST())
 				printErrorCode(500);
 		}
+		else if(cmd == "DELETE") {
+			if(!DELETE())
+				printErrorCode(600);
+		}
 		else {
 			printErrorCode(700);
 		}
@@ -238,7 +242,14 @@ bool Manager::PRINT_ST()
 
 bool Manager::DELETE() 
 {
+	if(stree->getRoot() == NULL)
+		return false;
+	
+	if(!stree->Delete())
+		return false;
 
+	printSuccessCode("DELETE");
+	return true;
 }
 
 void Manager::printErrorCode(int n) {				//ERROR CODE PRINT

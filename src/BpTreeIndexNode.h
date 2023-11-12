@@ -25,6 +25,7 @@ public:
 
 	map <string, BpTreeNode*>* getIndexMap() { return &mapIndex; }
 
+	bool isDataNode() { return false; }
 };
 
 #endif

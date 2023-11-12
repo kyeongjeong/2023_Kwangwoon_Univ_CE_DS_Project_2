@@ -3,14 +3,12 @@
 bool SelectionTree::Insert(LoanBookData* newData) {
 
     int treeHeight = 4;
-    bool isFirst = false;
     
     if(root == NULL) {
 
         SelectionTreeNode* newSelNode = new SelectionTreeNode();
         root = newSelNode;
         createSelTree(root, treeHeight-1);
-        isFirst = true;
     }
 
     int direction[3] = {((newData->getCode() / 100) / 4), (((newData->getCode() / 100) % 4) / 2), (((newData->getCode() / 100) % 4) % 2)};
@@ -40,11 +38,55 @@ bool SelectionTree::Insert(LoanBookData* newData) {
         if((pCur->getBookData() == NULL) || (childData->getName() < pCur->getBookData()->getName()))
             pCur->setBookData(childData);
     }
-    cout << root->getBookData()->getName() << endl;
+    // cout << root->getBookData()->getName() << endl;
 }
 
 bool SelectionTree::Delete() {
 
+    int tempNum = root->getBookData()->getCode();
+    int direction[3] = {((root->getBookData()->getCode() / 100) / 4), (((root->getBookData()->getCode() / 100) % 4) / 2), (((root->getBookData()->getCode() / 100) % 4) % 2)};
+    SelectionTreeNode* pCur = root;
+    for (int i = 0; i < 3; i++) {
+
+        pCur->setBookData(NULL);
+        if (direction[i] == 0 && pCur->getLeftChild() != NULL) 
+            pCur = pCur->getLeftChild();
+
+        else if (direction[i] == 1 && pCur->getRightChild() != NULL) 
+            pCur = pCur->getRightChild();
+
+        else 
+            return false;
+    }
+
+    LoanBookHeap* tempHeap = pCur->getHeap();
+    tempHeap->heapifyDown(tempHeap->getRoot());
+    pCur->setBookData(tempHeap->getRoot()->getBookData());
+
+    while(pCur->getParent() != NULL) {
+
+        pCur = pCur->getParent();
+        LoanBookData* leftData = pCur->getLeftChild()->getBookData();
+        LoanBookData* rightData = pCur->getRightChild()->getBookData();
+
+        if((leftData == NULL) && (rightData == NULL))
+            continue;
+
+        else if((rightData == NULL) || ((leftData != NULL) && (leftData->getName() < rightData->getName()))) {
+            LoanBookData* tempData = new LoanBookData;
+            tempData->setBookData(leftData->getName(), leftData->getCode(), leftData->getAuthor(), leftData->getYear(), leftData->getLoanCount());
+            pCur->setBookData(tempData);
+        }
+
+        else {
+            LoanBookData* tempData = new LoanBookData;
+            tempData->setBookData(rightData->getName(), rightData->getCode(), rightData->getAuthor(), rightData->getYear(), rightData->getLoanCount());
+            pCur->setBookData(tempData);
+        }
+    }
+    // if(root->getBookData() != NULL)
+    //     cout << root->getBookData()->getName() << endl;
+    return true;
 }
 
 bool SelectionTree::printBookData(int bookCode) {
@@ -73,8 +115,12 @@ bool SelectionTree::printBookData(int bookCode) {
 
     *fout << "========PRiNT_ST========" << endl;
     map<string, LoanBookData*>::iterator mIter;
-    for(mIter = pMap.begin(); mIter != pMap.end(); mIter++) 
-        *fout << mIter->second->getName() << "/" << mIter->second->getCode() << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+    for(mIter = pMap.begin(); mIter != pMap.end(); mIter++) {
+        *fout << mIter->second->getName() << "/" << mIter->second->getCode();
+        if(mIter->second->getCode() == 0)
+			*fout << "00";
+        *fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+    }
     *fout << "========================" << endl << endl;
 
     return true;

@@ -21,6 +21,41 @@ void LoanBookHeap::heapifyUp(LoanBookHeapNode* pN) {
 
 void LoanBookHeap::heapifyDown(LoanBookHeapNode* pN) {
 
+    if((pN->getLeftChild() == NULL) || (pN->getRightChild() == NULL)) {
+        pN->setBookData(NULL);
+        return;
+    }
+    
+    LoanBookHeapNode* pCur;
+    queue<LoanBookHeapNode*> que;
+    que.push(pN);
+
+    while (!que.empty()) {
+
+        pCur = que.front();
+        que.pop();
+
+        if (pCur->getLeftChild() != NULL) 
+            que.push(pCur->getLeftChild());
+        
+        if (pCur->getRightChild() != NULL) 
+            que.push(pCur->getRightChild());
+
+        if (que.empty()) 
+            break;
+    }
+
+    LoanBookData* temp = new LoanBookData;
+    temp->setBookData(pCur->getBookData()->getName(), pCur->getBookData()->getCode(), pCur->getBookData()->getAuthor(), pCur->getBookData()->getYear(), pCur->getBookData()->getLoanCount());
+    pN->setBookData(temp);
+
+    LoanBookHeapNode* pPar = pCur->getParent();
+    if(pPar->getLeftChild() == pCur)
+        pPar->setLeftChild(NULL);
+    else if(pPar->getRightChild() == pCur)
+        pPar->setRightChild(NULL);
+
+    delete pCur;
 }
 
 bool LoanBookHeap::Insert(LoanBookData* data) {

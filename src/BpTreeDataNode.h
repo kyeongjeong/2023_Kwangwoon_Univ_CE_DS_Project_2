@@ -31,6 +31,8 @@ public:
 		mapData.erase(name);
 	}
 	map<string, LoanBookData*>* getDataMap() { return &mapData; }
+
+	bool isDataNode() { return true; }
 };
 
 #endif
