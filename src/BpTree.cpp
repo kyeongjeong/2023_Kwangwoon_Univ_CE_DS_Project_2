@@ -264,37 +264,26 @@ BpTreeNode* BpTree::searchDataNode(string name) {
 
 bool BpTree::searchBook(string name, bool isPrint) {
 
-	BpTreeNode* pCur = root;
+	BpTreeNode* pCur;
 	map <string, LoanBookData*>::iterator mIter;
 	map <string, BpTreeNode*>::iterator iIter;
 	bool isBreak = false;
 
-	while(pCur->getMostLeftChild() != NULL) 
-		pCur = pCur->getMostLeftChild();
-	while(!pCur->isDataNode())
-		pCur = pCur->getIndexMap()->begin()->second;
-	
-	while(pCur != NULL) {
+	pCur = searchDataNode(name);
+	for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
 
-		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+		if(mIter->first == name) {
 
-			if(mIter->first == name) {
-
-				if(isPrint == true) {
-					*fout << "========SEARCH_BP========" << endl;
-					*fout << mIter->second->getName() << "/" << mIter->second->getCode();
-					if(mIter->second->getCode() == 0)
-						*fout << "00";
-					*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
-					*fout << "=========================" << endl;
-				}
-				isBreak = true;
-				break;
+			if(isPrint == true) {
+				*fout << "========SEARCH_BP========" << endl;
+				*fout << mIter->second->getName() << "/" << mIter->second->getCode();
+				if(mIter->second->getCode() == 0)
+					*fout << "00";
+				*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+				*fout << "=========================" << endl;
 			}
+			isBreak = true;
 		}
-		if(isBreak == true)
-			break;
-		pCur = pCur->getNext();
 	}
 	if(isBreak == false)
 		return isBreak;
@@ -304,6 +293,7 @@ bool BpTree::searchBook(string name, bool isPrint) {
 
 		pCur = pCur->getParent();
 		*fout << " -> ";
+		int size = pCur->getIndexMap()->size();
 		for(iIter = pCur->getIndexMap()->begin(); iIter != pCur->getIndexMap()->end(); iIter++)
 			*fout << iIter->first << " ";
 	}
@@ -313,16 +303,12 @@ bool BpTree::searchBook(string name, bool isPrint) {
 
 bool BpTree::searchRange(string start, string end) {
 	
-	BpTreeNode* pCur = root;
+	BpTreeNode* pCur;
 	map <string, LoanBookData*>::iterator mIter;
 	bool isPrint = false;
 	string bookName, firstWord;
-
-	while(pCur->getMostLeftChild() != NULL) 
-		pCur = pCur->getMostLeftChild();
-	while(!pCur->isDataNode())
-		pCur = pCur->getIndexMap()->begin()->second;
 	
+	pCur = searchDataNode(start);
 	while(pCur != NULL) {
 
 		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
@@ -341,12 +327,7 @@ bool BpTree::searchRange(string start, string end) {
 	if(isPrint == false)
 		return isPrint;
 
-	pCur = root;
-	while(pCur->getMostLeftChild() != NULL) 
-		pCur = pCur->getMostLeftChild();
-	while(!pCur->isDataNode())
-		pCur = pCur->getIndexMap()->begin()->second;
-
+	pCur = searchDataNode(start);
 	*fout << "========SEARCH_BP========" << endl;
 	while(pCur != NULL) {
 
@@ -391,7 +372,149 @@ bool BpTree::printBP() {
 
 bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 
+	bool isInIndex = false;
+	BpTreeNode *pCur, *pIndex, *pSib, *pSwap;
+	map <string, BpTreeNode*>::iterator iIter;
+	map <string, LoanBookData*>::iterator mIter;
+
+	pCur = dNode->getParent();
+	while(pCur != NULL) {
+		for(iIter = pCur->getIndexMap()->begin(); iIter != pCur->getIndexMap()->end(); iIter++) {
+			if(iIter->first == dName) {
+				pIndex = pCur;
+				isInIndex = true;
+				break;
+			}
+		}
+		pCur = pCur->getParent();
+	}
+	pCur = dNode;
+
+	// 1. index에 존재 x
+	if(isInIndex == false) {
+
+		if(dNode->getDataMap()->size() == 1) { // 1.1. dNode->size == 1(dNode가 가장 왼쪽의 mostLeftChild)
+
+			dNode->getParent()->setMostLeftChild(NULL);
+			if(dNode->getNext() != NULL)
+				dNode->getNext()->setPrev(NULL);
+			delete dNode;
+			return true;
+		}
+		dNode->deleteMap(dName); // 1.2. dNode->size > 1
+		return true;
+	}
+
+	// 2. index에 존재
+	if(dNode->getDataMap()->size() > 1) { // 2.1. underflow가 발생하지 x
+
+		mIter = dNode->getDataMap()->begin();
+		if(mIter->first == dName)
+			mIter++;
+		string swapName = mIter->first;
+
+		pCur = pIndex;
+		pCur->insertIndexMap(swapName, dNode);
+		pCur->deleteMap(dName);
+		dNode->deleteMap(dName);
+		return true;
+	}
 	
-	
-	*fout << "delete " << dName << endl;
+	// 2.2. underflow 발생
+	// 2.2.1. 재배치 o
+	if(((dNode->getNext() != NULL) && (dNode->getNext()->getParent() == dNode->getParent()) && (dNode->getNext()->getDataMap()->size() > 1)) || ((dNode->getPrev() != NULL) && (dNode->getPrev()->getParent() == dNode->getParent()) && (dNode->getPrev()->getDataMap()->size() > 1))) {
+		
+		string swapName, upName;
+		if((dNode->getNext() != NULL) && (dNode->getNext()->getParent() == dNode->getParent()) && (dNode->getNext()->getDataMap()->size() > 1)) {
+
+			pSib = pCur->getNext(); 
+			mIter = pSib->getDataMap()->begin(); 
+			swapName = mIter->first;
+			upName = (++mIter)->first;
+ 
+			pCur->insertDataMap(swapName, pSib->getDataMap()->begin()->second); 
+		}
+		else if((dNode->getPrev() != NULL) && (dNode->getPrev()->getParent() == dNode->getParent()) && (dNode->getPrev()->getDataMap()->size() > 1)) {
+
+			pSib = pCur->getPrev();
+			mIter = pSib->getDataMap()->end(); 
+			swapName = (--mIter)->first;
+			pCur->insertDataMap(swapName, mIter->second);
+
+			upName = (--mIter)->first;
+		}	
+		pSib->deleteMap(swapName);
+
+		bool isBreak = false;
+		pCur = pCur->getParent();
+		while(pCur != NULL) {
+			
+			for(iIter = pCur->getIndexMap()->begin(); iIter != pCur->getIndexMap()->end(); iIter++) {
+				if(iIter->first == swapName) {
+					isBreak = true;
+					break;
+				}
+			}
+			if(isBreak == true)
+				break;
+			pCur = pCur->getParent();
+		}
+
+		if(pCur != NULL) {
+			pCur->insertIndexMap(upName, iIter->second);
+			pCur->deleteMap(swapName);
+		}
+
+		for(iIter = dNode->getIndexMap()->begin(); iIter != dNode->getIndexMap()->end(); iIter++) {
+
+			if(iIter->first == dName) {
+				dNode->insertIndexMap(swapName, iIter->second);
+				dNode->deleteMap(dName);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// 2.2.2. 재배치 x(병합)
+	if((dNode->getNext() != NULL) && (dNode->getNext()->getParent() == dNode->getParent()) && (dNode->getNext()->getDataMap()->size() == 1)) {
+		
+		pSib = pCur->getNext();
+		string swapName = pSib->getDataMap()->begin()->first;
+
+		pCur->insertDataMap(swapName, pSib->getDataMap()->begin()->second);
+		pCur->setNext(pSib->getNext());
+		if(pSib->getNext() != NULL)
+			pSib->setPrev(pCur);
+		delete pSib;
+
+		pIndex->getMostLeftChild()->insertIndexMap(dName, pCur);
+		pCur->setParent(pIndex->getMostLeftChild());
+		if(pIndex == root) {
+			root = pIndex->getMostLeftChild();
+			pIndex->getMostLeftChild()->setParent(NULL);
+		}
+		if(pIndex->getParent() != NULL) {
+			for(iIter = pIndex->getParent()->getIndexMap()->begin(); iIter != pIndex->getParent()->getIndexMap()->end(); iIter++) {
+				if(iIter->first == dName)
+					iIter->second = pIndex->getMostLeftChild();
+			}
+			if(pIndex->getParent()->getMostLeftChild() == pIndex)
+				pIndex->getParent()->setMostLeftChild(pIndex->getMostLeftChild());
+			pIndex->getMostLeftChild()->setParent(pIndex->getParent());
+		}
+		pCur = pIndex;
+		pIndex = pIndex->getMostLeftChild();	
+		delete pCur;
+		
+		for(iIter = pIndex->getIndexMap()->begin(); iIter != pIndex->getIndexMap()->end(); iIter++) {
+			if(iIter->first == dName) {
+				pIndex->insertIndexMap(swapName, iIter->second);
+				iIter->second->deleteMap(dName);
+				break;
+			}
+		}
+		pIndex->deleteMap(dName);
+	}
+	return true;
 }

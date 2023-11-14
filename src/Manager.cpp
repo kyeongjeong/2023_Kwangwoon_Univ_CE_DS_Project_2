@@ -54,7 +54,7 @@ void Manager::run(const char* command)
 bool Manager::LOAD()
 {
 	ifstream floan;
-    floan.open("loan.txt");
+    floan.open("loan_book.txt");
 	if(!floan) 
 		return false;
 
