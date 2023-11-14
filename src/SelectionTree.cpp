@@ -39,6 +39,7 @@ bool SelectionTree::Insert(LoanBookData* newData) {
             pCur->setBookData(childData);
     }
     // cout << root->getBookData()->getName() << endl;
+    return true;
 }
 
 bool SelectionTree::Delete() {

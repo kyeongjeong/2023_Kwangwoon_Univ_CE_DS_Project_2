@@ -15,7 +15,7 @@ public:
 		pPrev = NULL;
 	}
 	~BpTreeDataNode() {
-
+		
 	}
 
 	void setNext(BpTreeNode* pN) { pNext = pN; }

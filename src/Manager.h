@@ -29,9 +29,9 @@ public:
 
 	void run(const char* command);
 	bool LOAD();
-	bool ADD();
+	bool ADD(string name, int code, string author, int year);
 
-	bool SEARCH_BP();
+	bool SEARCH_BP(string name, string start, string end);
 
 	bool PRINT_BP();
 	bool PRINT_ST();

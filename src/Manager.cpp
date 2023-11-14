@@ -15,32 +15,76 @@ void Manager::run(const char* command)
 
 	while (!fin.eof())
 	{
-		string cmd;
-        fin >> cmd; // Read the command
+		string cmd, line;
+		getline(fin, line);
+		if (!line.empty() && line.back() == '\r') 
+        	line.pop_back();
+
+		vector<string> tokens;
+		char* token = strtok(&line[0], "\t");
+
+		while (token != NULL) {
+			tokens.push_back(token);
+			token = strtok(NULL, "\t");
+		}
+		cmd = tokens[0];
 
         if (cmd == "LOAD") {
-            if(!LOAD())
+            if((tokens.size() != 1) || (!LOAD()))
 				printErrorCode(100);
         }
 		else if (cmd == "ADD") {
-            if(!ADD())
+
+			string name, author;
+			int code, year;
+
+			if (tokens.size() == 5) {
+				name = tokens[1];
+				code = stoi(tokens[2]);
+				author = tokens[3];
+				year = stoi(tokens[4]);
+
+				if(!ADD(name, code, author, year))
+					printErrorCode(200);
+			}
+			else
 				printErrorCode(200);
         }
 		else if (cmd == "SEARCH_BP") {
-			if(!SEARCH_BP())
+
+			string name, start, end;
+
+			if (tokens.size() == 2) {         
+				name = tokens[1];
+				if(!SEARCH_BP(name, "", ""))
+					printErrorCode(300);
+			}
+			else if (tokens.size() == 3) {
+				start = tokens[1];
+				end = tokens[2];
+				if(!SEARCH_BP("", start, end))
+					printErrorCode(300);
+			}
+			else
 				printErrorCode(300);
 		}
 		else if (cmd == "PRINT_BP") {
-			if(!PRINT_BP())
+			if((tokens.size() != 1) || (!PRINT_BP()))
 				printErrorCode(400);
 		}
 		else if(cmd == "PRINT_ST") {
-			if(!PRINT_ST())
+			if((tokens.size() != 1) || (!PRINT_ST()))
 				printErrorCode(500);
 		}
 		else if(cmd == "DELETE") {
-			if(!DELETE())
+			if((tokens.size() != 1) || (!DELETE()))
 				printErrorCode(600);
+		}
+		else if(cmd == "EXIT") {
+			printSuccessCode("EXIT");
+			fin.close();
+			flog.close();
+			return;
 		}
 		else {
 			printErrorCode(700);
@@ -58,7 +102,7 @@ bool Manager::LOAD()
 	if(!floan) 
 		return false;
 
-	if(bptree->getRoot() != NULL)
+	if((bptree->getRoot() != NULL) || (stree->getRoot() != NULL))
 		return false;
 	
 	string name, author;
@@ -66,7 +110,7 @@ bool Manager::LOAD()
 
     string line;
 	while (getline(floan, line)) {
-
+ 
 		if (!line.empty() && line.back() == '\r') 
             line.pop_back();
 
@@ -109,42 +153,22 @@ bool Manager::LOAD()
 		else if((code == 700) && (loan_count == 2))
 			isLoanAvail = false;
 
-		if(isLoanAvail == true)
-			bptree->Insert(newData);
-		else
-			stree->Insert(newData);
+		if(isLoanAvail == true) {
+			if (!bptree->Insert(newData))
+				return false;
+		}
+		else {
+			if (!stree->Insert(newData))
+				return false;
+		}
     }
 	printSuccessCode("LOAD");
+	floan.close();
 	return true;
 }
 
-bool Manager::ADD()
+bool Manager::ADD(string name, int code, string author, int year)
 {
-	string line;
-	getline(fin, line);
-	if (!line.empty() && line.back() == '\r') 
-        line.pop_back();
-
-	vector<string> tokens;
-	char* token = strtok(&line[0], "\t");
-
-    while (token != NULL) {
-        tokens.push_back(token);
-        token = strtok(NULL, "\t");
-    }
-
-	string name, author;
-	int code, year;
-
-    if (tokens.size() == 4) {
-        name = tokens[0];
-        code = stoi(tokens[1]);
-        author = tokens[2];
-        year = stoi(tokens[3]);
-	}
-	else
-		return false;
-
 	LoanBookData *newData = new LoanBookData();
 	newData->setBookData(name, code, author, year, 0);
 	if(!bptree->Insert(newData))
@@ -159,36 +183,14 @@ bool Manager::ADD()
 	return true;
 }
 
-bool Manager::SEARCH_BP() 
+bool Manager::SEARCH_BP(string name, string start, string end) 
 {
-	string name, start, end;
-    string line;
-
-	if (bptree->getRoot() == NULL)
-		return false;
 	
-	getline(fin, line);
-	if (!line.empty() && line.back() == '\r') 
-        line.pop_back();
-
-	vector<string> tokens;
-	char* token = strtok(&line[0], "\t");
-
-    while (token != NULL) {
-        tokens.push_back(token);
-        token = strtok(NULL, "\t");
-    }
-
-    if (tokens.size() == 1) {         
-
-		name = tokens[0];
+    if (!name.empty() && start.empty() && end.empty()) {         
 		if (!bptree->searchBook(name, true))
 			return false;
 	}
-	else if (tokens.size() == 2) {
-
-		start = tokens[0];
-		end = tokens[1];
+	else if (name.empty() && !start.empty() && !end.empty()) {
 		if(!bptree->searchRange(start, end))
 			return false;
 	}

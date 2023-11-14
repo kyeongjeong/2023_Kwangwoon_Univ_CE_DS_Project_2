@@ -64,14 +64,13 @@ bool BpTree::Insert(LoanBookData* newData) {
 		pCur = pCur->getNext();
 	}
 
-	if(root->getMostLeftChild() == NULL) {
+	if(root->isDataNode()) {
 
 		root->insertDataMap(newData->getName(), newData);
 		if(excessDataNode(root))
 			splitDataNode(root);
 		return true;
 	}
-
 	else {
 
 		pCur = searchDataNode(newData->getName());
@@ -86,8 +85,9 @@ bool BpTree::Insert(LoanBookData* newData) {
 				splitIndexNode(pCur);
 			pCur = pCur->getParent();
 		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool BpTree::excessDataNode(BpTreeNode* pDataNode) {
@@ -267,6 +267,7 @@ bool BpTree::searchBook(string name, bool isPrint) {
 	BpTreeNode* pCur;
 	map <string, LoanBookData*>::iterator mIter;
 	map <string, BpTreeNode*>::iterator iIter;
+	//
 	bool isBreak = false;
 
 	pCur = searchDataNode(name);
@@ -281,10 +282,14 @@ bool BpTree::searchBook(string name, bool isPrint) {
 					*fout << "00";
 				*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
 				*fout << "=========================" << endl;
+				// return true;
 			}
+			//
 			isBreak = true;
 		}
 	}
+	// return false;
+	//
 	if(isBreak == false)
 		return isBreak;
 
@@ -465,10 +470,11 @@ bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 			pCur->deleteMap(swapName);
 		}
 
-		for(iIter = dNode->getIndexMap()->begin(); iIter != dNode->getIndexMap()->end(); iIter++) {
+		for(iIter = pIndex->getIndexMap()->begin(); iIter != pIndex->getIndexMap()->end(); iIter++) {
 
 			if(iIter->first == dName) {
-				dNode->insertIndexMap(swapName, iIter->second);
+				pIndex->insertIndexMap(swapName, iIter->second);
+				pIndex->deleteMap(dName);
 				dNode->deleteMap(dName);
 				return true;
 			}
@@ -515,6 +521,7 @@ bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 			}
 		}
 		pIndex->deleteMap(dName);
+		return true;
 	}
-	return true;
+	return false;
 }
