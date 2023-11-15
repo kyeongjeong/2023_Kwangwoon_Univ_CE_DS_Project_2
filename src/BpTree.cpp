@@ -147,156 +147,154 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
 		newDataNode->setParent(newIndexNode); // set parent, child
 		pDataNode->setParent(newIndexNode);
 	}
-	else {
+	else { // If there is a parent index node
 
-		indexNode = pDataNode->getParent();
-		indexNode->insertIndexMap(pKey, pDataNode); // insert data into parent
-		
-		iIter = indexNode->getIndexMap()->begin(); 
-		if (newDataNode->getDataMap()->begin()->first < iIter->first)
-			indexNode->setMostLeftChild(newDataNode); 
+        indexNode = pDataNode->getParent();
+        indexNode->insertIndexMap(pKey, pDataNode); // Insert pDataNode into the parent index node with the key pKey
 
-		for (; iIter != indexNode->getIndexMap()->end(); iIter++) { 
-	 	
-			if (newDataNode->getDataMap()->begin()->first == iIter->first)
-		 		iIter->second = newDataNode;
+        iIter = indexNode->getIndexMap()->begin(); 
+        if (newDataNode->getDataMap()->begin()->first < iIter->first)
+            indexNode->setMostLeftChild(newDataNode); // Update the most left child if needed
 
-		 	if (pKey == iIter->first)
-		 		iIter->second = pDataNode;
-		}	
-		newDataNode->setParent(indexNode);
-		pDataNode->setParent(indexNode);
-		if(pDataNode->getPrev() != NULL)
-			pDataNode->getPrev()->setNext(newDataNode);
-		newDataNode->setPrev(pDataNode->getPrev());
+        for (; iIter != indexNode->getIndexMap()->end(); iIter++) { 
+     
+            if (newDataNode->getDataMap()->begin()->first == iIter->first)
+                iIter->second = newDataNode; // Update the corresponding child of the index node
 
-		if (indexNode->getIndexMap()->size() > (order - 1))
-		 	splitIndexNode(indexNode);
-	}
-	newDataNode->setNext(pDataNode);
-	pDataNode->setPrev(newDataNode);
+            if (pKey == iIter->first)
+                iIter->second = pDataNode; // Update the corresponding child of the index node
+        }   
+        newDataNode->setParent(indexNode); // Set parent and child relationships
+        pDataNode->setParent(indexNode);
+        if(pDataNode->getPrev() != NULL)
+            pDataNode->getPrev()->setNext(newDataNode); // Update the next and previous pointers of adjacent data nodes
+        newDataNode->setPrev(pDataNode->getPrev());
+
+        if (indexNode->getIndexMap()->size() > (order - 1))
+            splitIndexNode(indexNode); // Perform index node split if necessary
+    }
+    newDataNode->setNext(pDataNode); // Update the next and previous pointers of adjacent data nodes
+    pDataNode->setPrev(newDataNode);
 }
 
 void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
-	
-	int splitKey = ceil((order-1)/2.0);
-	BpTreeIndexNode* newIndexNode = new BpTreeIndexNode();
-	BpTreeNode *upIndexNode;
-	map <string, BpTreeNode*>::iterator iIter;
-	map <string, BpTreeNode*>::iterator iIter2;
-	
-	iIter = pIndexNode->getIndexMap()->begin();
-	for(int i = 0; i < splitKey; i++) {
 
-		newIndexNode->insertIndexMap(iIter->first, iIter->second);
-		if(pIndexNode->getMostLeftChild() != NULL) {
-			newIndexNode->setMostLeftChild(pIndexNode->getMostLeftChild());
-			pIndexNode->getMostLeftChild()->setParent(newIndexNode);
-			pIndexNode->setMostLeftChild(NULL);
-		}
-		iIter->second->setParent(newIndexNode);
-		iIter2 = iIter;
-		iIter++;
-		pIndexNode->deleteMap(iIter2->first);
-	}
-	string pKey = iIter->first;
-	iIter2 = iIter++;
-	pIndexNode->setMostLeftChild(iIter2->second);
-	pIndexNode->deleteMap(iIter2->first);
-	
+    int splitKey = ceil((order - 1) / 2.0); // Calculate the split key, considering the order of the B+ tree
+    BpTreeIndexNode* newIndexNode = new BpTreeIndexNode(); // Create a new index node to store the split data
+    BpTreeNode *upIndexNode; // Pointer to a new parent index node
+    map<string, BpTreeNode*>::iterator iIter; // Iterator for traversing the index map
+    map<string, BpTreeNode*>::iterator iIter2; // Iterator for deleting elements from the index map
 
-	if(pIndexNode->getParent() == NULL) {
-		
-		upIndexNode = new BpTreeIndexNode();
-		root = upIndexNode;
-		upIndexNode->insertIndexMap(pKey, pIndexNode);	
-		upIndexNode->setMostLeftChild(newIndexNode);
+    iIter = pIndexNode->getIndexMap()->begin(); // Start iterating through the index map
+    for(int i = 0; i < splitKey; i++) {
 
-		newIndexNode->setParent(upIndexNode);
-		pIndexNode->setParent(upIndexNode);
+        newIndexNode->insertIndexMap(iIter->first, iIter->second); // Copy index data to the new index node
+        if (pIndexNode->getMostLeftChild() != NULL) {
+            newIndexNode->setMostLeftChild(pIndexNode->getMostLeftChild()); // Copy the most left child if it exists
+            pIndexNode->getMostLeftChild()->setParent(newIndexNode); // Update the parent of the most left child
+            pIndexNode->setMostLeftChild(NULL); // Set the most left child of the original index node to NULL
+        }
+        iIter->second->setParent(newIndexNode); // Update the parent of the copied child
+        iIter2 = iIter;
+        iIter++;
+        pIndexNode->deleteMap(iIter2->first); // Remove the copied index data from the original index node
+    }
+    string pKey = iIter->first; // Retrieve the first key element of the remaining data in pIndexNode
+    iIter2 = iIter++;
+    pIndexNode->setMostLeftChild(iIter2->second); // Update the most left child of pIndexNode
+    pIndexNode->deleteMap(iIter2->first); // Remove the copied index data from pIndexNode
 
-	}
-	else {
+    if(pIndexNode->getParent() == NULL) { // If there is no parent index node (root case)
 
-		upIndexNode = pIndexNode->getParent();
-		upIndexNode->insertIndexMap(pKey, pIndexNode);
-		string nKey = newIndexNode->getIndexMap()->begin()->first;
+        upIndexNode = new BpTreeIndexNode(); // Create a new parent index node
+        root = upIndexNode; // Set the new index node as the root
+        upIndexNode->insertIndexMap(pKey, pIndexNode); // Insert pIndexNode into the upIndexNode map with the key pKey
+        upIndexNode->setMostLeftChild(newIndexNode); // Set newIndexNode as the most left child of the upIndexNode
 
-		iIter = upIndexNode->getIndexMap()->begin();
-		if(nKey < iIter->first)
-			upIndexNode->setMostLeftChild(newIndexNode);
+        newIndexNode->setParent(upIndexNode); // Set parent and child relationships
+        pIndexNode->setParent(upIndexNode);
+    }
+    else { // If there is a parent index node
 
-		for(; iIter != upIndexNode->getIndexMap()->end(); iIter++) {
+        upIndexNode = pIndexNode->getParent();
+        upIndexNode->insertIndexMap(pKey, pIndexNode); // Insert pIndexNode into the parent upIndexNode with the key pKey
 
-			if (iIter == upIndexNode->getIndexMap()->end()) {
-				iIter->second = pIndexNode;
-				break;
-			}
+        string nKey = newIndexNode->getIndexMap()->begin()->first; // Retrieve the first key of newIndexNode
+        iIter = upIndexNode->getIndexMap()->begin();
+        if (nKey < iIter->first)
+            upIndexNode->setMostLeftChild(newIndexNode); // Update the most left child of upIndexNode if needed
 
-			iIter2 = iIter++;
-			if (nKey < iIter->first) {
-				iIter2->second = newIndexNode;
-				++iIter;
-				break;
-			}
-			--iIter;
-		}
+        for(; iIter != upIndexNode->getIndexMap()->end(); iIter++) {
 
-		newIndexNode->setParent(upIndexNode);
-		pIndexNode->setParent(upIndexNode);
-		newIndexNode->setMostLeftChild(pIndexNode->getMostLeftChild());	
+            if (iIter == upIndexNode->getIndexMap()->end()) {
+                iIter->second = pIndexNode; // Update the corresponding child of upIndexNode
+                break;
+            }
 
-		if (upIndexNode->getIndexMap()->size() > (order - 1))
-			splitIndexNode(upIndexNode);	
-	}
+            iIter2 = iIter++;
+            if (nKey < iIter->first) {
+                iIter2->second = newIndexNode; // Update the corresponding child of upIndexNode
+                ++iIter;
+                break;
+            }
+            --iIter;
+        }
+
+        newIndexNode->setParent(upIndexNode); // Set parent and child relationships
+        pIndexNode->setParent(upIndexNode);
+        newIndexNode->setMostLeftChild(pIndexNode->getMostLeftChild()); // Update the most left child of newIndexNode
+
+        if (upIndexNode->getIndexMap()->size() > (order - 1))
+            splitIndexNode(upIndexNode); // Perform index node split if necessary
+    }
 }
 
 BpTreeNode* BpTree::searchDataNode(string name) {
-	
-	BpTreeNode* pCur = root;
-	BpTreeNode* pNext;
-	map <string, LoanBookData*>::iterator mIter;
 
-	while(pCur->getMostLeftChild() != NULL) 
-		pCur = pCur->getMostLeftChild();
-	while(!pCur->isDataNode())
-		pCur = pCur->getIndexMap()->begin()->second;
-	pNext = pCur;
+    BpTreeNode* pCur = root; // Initialize the current node to the root
+    BpTreeNode* pNext; // Pointer to the next node in the B+ tree
+    map<string, LoanBookData*>::iterator mIter; // Iterator for traversing the data map
 
-	// 이거 위로 옮기기
-	if((pCur != root) && (pCur != pCur->getParent()->getMostLeftChild()) && (name < pCur->getDataMap()->begin()->first))
-		return NULL;
+    while (pCur->getMostLeftChild() != NULL) 
+        pCur = pCur->getMostLeftChild(); // Traverse to the leftmost child to find the starting point
+    while (!pCur->isDataNode())
+        pCur = pCur->getIndexMap()->begin()->second; // Traverse to the data node level
+    pNext = pCur; // Set the next node to the current node
 
-	while(pCur != NULL) {
+    if ((pCur != root) && (pCur != pCur->getParent()->getMostLeftChild()) && (name < pCur->getDataMap()->begin()->first))
+        return NULL; // Return null if the search name is smaller than the first key in the leftmost data node
 
-		if(pCur->getNext() == NULL)
-			return pCur;
-		
-		pNext = pCur->getNext();
-		if(name < pNext->getDataMap()->begin()->first)
-			return pCur;
+    while (pCur != NULL) {
 
-		pCur = pCur->getNext();
-	}	
-	return pCur;
+        if (pCur->getNext() == NULL)
+            return pCur; // Return the current node if there is no next node
+
+        pNext = pCur->getNext(); // Move to the next node
+        if (name < pNext->getDataMap()->begin()->first)
+            return pCur; // Return the current node if the search name is smaller than the first key in the next node
+
+        pCur = pCur->getNext(); // Move to the next node
+    }   
+    return pCur; // Return the current node
 }
 
 bool BpTree::searchBook(string name, bool isPrint) {
 
-	BpTreeNode* pCur;
-	map <string, LoanBookData*>::iterator mIter;
-	map <string, BpTreeNode*>::iterator iIter;
+	BpTreeNode* pCur; // Pointer to the current node
+    map<string, LoanBookData*>::iterator mIter; // Iterator for traversing the data map
+    map<string, BpTreeNode*>::iterator iIter; // Iterator for traversing the index map
 	//
 	bool isBreak = false;
 
-	pCur = searchDataNode(name);
-	if(pCur == NULL)
-		return false;
+	pCur = searchDataNode(name); // Find the data node containing the search 'name'
+    if (pCur == NULL)
+        return false; // Return false if the search 'name' is not found in the B+ tree
+
 	for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
 
 		if(mIter->first == name) {
 
-			if(isPrint == true) {
+			if(isPrint == true) { // Print details if 'isPrint' is true
 				*fout << "========SEARCH_BP========" << endl;
 				*fout << mIter->second->getName() << "/" << mIter->second->getCode();
 				if(mIter->second->getCode() == 0)
@@ -309,7 +307,7 @@ bool BpTree::searchBook(string name, bool isPrint) {
 			isBreak = true;
 		}
 	}
-	// return false;
+	// return false; // Return false if the search 'name' is not found in the current data node
 	//
 	if(isBreak == false)
 		return isBreak;
@@ -328,75 +326,76 @@ bool BpTree::searchBook(string name, bool isPrint) {
 }
 
 bool BpTree::searchRange(string start, string end) {
-	
-	BpTreeNode* pCur;
-	map <string, LoanBookData*>::iterator mIter;
-	bool isPrint = false;
-	string bookName, firstWord;
-	
-	pCur = searchDataNode(start);
-	if(pCur == NULL)
-		return false;
-	while(pCur != NULL) {
 
-		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+    BpTreeNode* pCur; // Pointer to the current node
+    map<string, LoanBookData*>::iterator mIter; // Iterator for traversing the data map
+    bool isPrint = false; // Flag to indicate if printing is required
+    string bookName, firstWord; // Variables to store book names and the first character of each book name
+  
+    pCur = searchDataNode(start); // Find the starting point in the B+ tree for the search range
+    if (pCur == NULL)
+        return false; // Return false if the starting point is not found in the B+ tree
 
-			bookName = mIter->first;
-			firstWord = bookName.substr(0, 1);
-			if((firstWord.compare(start) >= 0) && (firstWord.compare(end) <= 0)) {
-				isPrint = true;
-				break;
-			}
-		}
-		if (isPrint == true)
-			break;
-		pCur = pCur->getNext();
-	}
-	if(isPrint == false)
-		return isPrint;
-	
-	pCur = searchDataNode(start);
+    while (pCur != NULL) { // Iterate through the data nodes to find the books within the specified range
 
-	*fout << "========SEARCH_BP========" << endl;
-	while(pCur != NULL) {
+        for (mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
 
-		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+            bookName = mIter->first;
+            firstWord = bookName.substr(0, 1);
+            if ((firstWord.compare(start) >= 0) && (firstWord.compare(end) <= 0)) {  // Check if the book name is within the specified range
+                isPrint = true; // Set the flag to indicate that printing is required
+                break;
+            }
+        }
+        if (isPrint == true)
+            break;
+        pCur = pCur->getNext(); // Move to the next data node
+    }
+    if (isPrint == false)
+        return isPrint; // Return false if no books are found within the specified range
 
-			bookName = mIter->first;
-			firstWord = bookName.substr(0, 1);
-			if((firstWord.compare(start) >= 0) && (firstWord.compare(end) <= 0)) {
-				*fout << mIter->second->getName() << "/" << mIter->second->getCode();
-				if(mIter->second->getCode() == 0)
-					*fout << "00";
-				*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
-			}
-		}
-		pCur = pCur->getNext();
-	}
-	*fout << "=========================" << endl;
-	return isPrint;
+    // Print the details of the books within the specified range
+    pCur = searchDataNode(start);
+    *fout << "========SEARCH_BP========" << endl;
+    while (pCur != NULL) {
+
+        for (mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+
+            bookName = mIter->first;
+            firstWord = bookName.substr(0, 1);
+            if ((firstWord.compare(start) >= 0) && (firstWord.compare(end) <= 0)) { // Check if the book name is within the specified range and print the details
+                *fout << mIter->second->getName() << "/" << mIter->second->getCode();
+                if (mIter->second->getCode() == 0)
+                    *fout << "00";
+                *fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+            }
+        }
+        pCur = pCur->getNext(); // Move to the next data node
+    }
+    *fout << "=========================" << endl;
+    return isPrint; // Return true if books are found within the specified range
 }
 
 bool BpTree::printBP() {
-	
-	BpTreeNode* pCur = root;
-	while(pCur->getMostLeftChild() != NULL) 
-		pCur = pCur->getMostLeftChild();
-	while(!pCur->isDataNode())
-		pCur = pCur->getIndexMap()->begin()->second;
-	
-	map <string, LoanBookData*>::iterator mIter;
-	while(pCur != NULL) {
 
-		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
-			*fout << mIter->second->getName() << "/" << mIter->second->getCode();
-			if(mIter->second->getCode() == 0)
-				*fout << "00";
-			*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
-		}
-		pCur = pCur->getNext();
-	}
-	return true;	
+    BpTreeNode* pCur = root; // Pointer to the current node, starting from the root
+    while (pCur->getMostLeftChild() != NULL)
+        pCur = pCur->getMostLeftChild(); // Traverse to the leftmost child to find the starting point
+    while (!pCur->isDataNode())
+        pCur = pCur->getIndexMap()->begin()->second; // Traverse to the data node level
+
+    map<string, LoanBookData*>::iterator mIter; // Iterator for traversing the data map
+    while (pCur != NULL) {  // Iterate through the data nodes to print the details of all the books
+
+        for (mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+            *fout << mIter->second->getName() << "/" << mIter->second->getCode();
+            if (mIter->second->getCode() == 0)
+                *fout << "00";
+            *fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
+        }
+        pCur = pCur->getNext(); // Move to the next data node
+    }
+    return true; // Return true to indicate successful printing
 }
 
 bool BpTree::Delete(BpTreeNode* dNode, string dName) { 
@@ -406,7 +405,7 @@ bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 	map <string, BpTreeNode*>::iterator iIter;
 	map <string, LoanBookData*>::iterator mIter;
 
-	pCur = dNode->getParent();
+	pCur = dNode->getParent(); // find dName in index node
 	while(pCur != NULL) {
 		for(iIter = pCur->getIndexMap()->begin(); iIter != pCur->getIndexMap()->end(); iIter++) {
 			if(iIter->first == dName) {

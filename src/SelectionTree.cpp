@@ -2,18 +2,16 @@
 
 bool SelectionTree::Insert(LoanBookData* newData) {
 
-    int treeHeight = 4;
-    
-    if(root == NULL) {
-
-        SelectionTreeNode* newSelNode = new SelectionTreeNode();
-        root = newSelNode;
-        createSelTree(root, treeHeight-1);
+    int treeHeight = 4; // Set the height of the Selection Tree
+    if (root == NULL) {
+        SelectionTreeNode* newSelNode = new SelectionTreeNode(); // Create a new Selection Tree node
+        root = newSelNode; // Set the new node as the root
+        createSelTree(root, treeHeight - 1); // Create the Selection Tree structure based on the specified height
     }
 
     int direction[3] = {((newData->getCode() / 100) / 4), (((newData->getCode() / 100) % 4) / 2), (((newData->getCode() / 100) % 4) % 2)};
     SelectionTreeNode* pCur = root;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) { // Traverse the Selection Tree based on the code of the new loan book data
 
         if (direction[i] == 0 && pCur->getLeftChild() != NULL) 
             pCur = pCur->getLeftChild();
@@ -22,11 +20,11 @@ bool SelectionTree::Insert(LoanBookData* newData) {
             pCur = pCur->getRightChild();
 
         else 
-            return false;
+            return false; // Return false if the specified direction is invalid
     }
 
-    pCur->getHeap()->Insert(newData);
-    pCur->setBookData(pCur->getHeap()->getRoot()->getBookData());
+    pCur->getHeap()->Insert(newData); // Insert the new loan book data into the heap of the current node
+    pCur->setBookData(pCur->getHeap()->getRoot()->getBookData()); // Update the book data of the current node
 
     while(pCur != root) {
 
@@ -36,44 +34,45 @@ bool SelectionTree::Insert(LoanBookData* newData) {
         
         pCur = pCur->getParent();
         if((pCur->getBookData() == NULL) || (childData->getName() < pCur->getBookData()->getName()))
-            pCur->setBookData(childData);
+            pCur->setBookData(childData); // Update the book data of the parent node with the smaller name or if it is null
     }
     // cout << root->getBookData()->getName() << endl;
-    return true;
+    return true; // Return true to indicate successful insertion
 }
 
 bool SelectionTree::Delete() {
 
-    int tempNum = root->getBookData()->getCode();
+    int tempNum = root->getBookData()->getCode();  // Save the code and name of the root node for reference
     string tempStr = root->getBookData()->getName();
+    // Determine the traversal direction based on the code of the root node
     int direction[3] = {((root->getBookData()->getCode() / 100) / 4), (((root->getBookData()->getCode() / 100) % 4) / 2), (((root->getBookData()->getCode() / 100) % 4) % 2)};
     SelectionTreeNode* pCur = root;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) { // Traverse the Selection Tree based on the determined direction
 
-        pCur->setBookData(NULL);
+        pCur->setBookData(NULL); // Set the book data of the current node to NULL
         if (direction[i] == 0 && pCur->getLeftChild() != NULL) 
-            pCur = pCur->getLeftChild();
+            pCur = pCur->getLeftChild(); 
 
         else if (direction[i] == 1 && pCur->getRightChild() != NULL) 
             pCur = pCur->getRightChild();
 
         else 
-            return false;
+            return false; // Return false if the specified direction is invalid
     }
 
-    pCur->getHeap()->heapifyDown(pCur->getHeap()->getRoot());
-    // string newRoot;
-    // if(pCur->getHeap()->getRoot()->getBookData() != NULL)
-    //     newRoot = pCur->getHeap()->getRoot()->getBookData()->getName();
-    pCur->setBookData(pCur->getHeap()->getRoot()->getBookData());
+    pCur->getHeap()->heapifyDown(pCur->getHeap()->getRoot()); // Perform heapify-down operation after deletion
+    string newRoot;
+    if(pCur->getHeap()->getRoot()->getBookData() != NULL)
+        newRoot = pCur->getHeap()->getRoot()->getBookData()->getName();
+    pCur->setBookData(pCur->getHeap()->getRoot()->getBookData()); // Update the book data of the current node
 
-    while(pCur->getParent() != NULL) {
+    while(pCur->getParent() != NULL) { // Update the book data of parent nodes along the path to the root
 
         pCur = pCur->getParent();
         LoanBookData* leftData = pCur->getLeftChild()->getBookData();
         LoanBookData* rightData = pCur->getRightChild()->getBookData();
 
-        if((leftData == NULL) && (rightData == NULL))
+        if((leftData == NULL) && (rightData == NULL)) // Check and update the book data of the current node based on its children's data
             continue;
 
         else if((rightData == NULL) || ((leftData != NULL) && (leftData->getName() < rightData->getName()))) {
@@ -88,16 +87,18 @@ bool SelectionTree::Delete() {
             pCur->setBookData(tempData);
         }
     }
-    // if(root->getBookData() != NULL)
-    //     cout << tempStr << " delete -> new root: "<< root->getBookData()->getName() << endl;
+    if(root->getBookData() != NULL)
+        cout << tempStr << " delete -> new root: "<< root->getBookData()->getName() << endl;
     return true;
 }
 
 bool SelectionTree::printBookData(int bookCode) {
 
+    // Determine the traversal direction based on the code of the book
     int direction[3] = {((bookCode / 100) / 4), (((bookCode / 100) % 4) / 2), (((bookCode / 100) % 4) % 2)};
     SelectionTreeNode* pCur = root;
 
+    // Traverse the Selection Tree based on the determined direction
     for (int i = 0; i < 3; i++) {
 
         if (direction[i] == 0 && pCur->getLeftChild() != NULL) 
@@ -107,19 +108,19 @@ bool SelectionTree::printBookData(int bookCode) {
             pCur = pCur->getRightChild();
 
         else 
-            return false;
+            return false; // Return false if the specified direction is invalid
     }
 
-    if(pCur->getHeap()->getRoot() == NULL)
+    if (pCur->getHeap()->getRoot() == NULL)
         return false;
 
-    pCur->getDataMap().clear();
-    traversalHeap(pCur->getHeap()->getRoot(), pCur);
-    map<string, LoanBookData*> pMap = pCur->getDataMap();
+    pCur->getDataMap().clear(); // Clear the data map of the current node
+    traversalHeap(pCur->getHeap()->getRoot(), pCur); // Traverse the heap and populate the data map
+    map<string, LoanBookData*> pMap = pCur->getDataMap(); // Retrieve the populated data map
 
-    *fout << "========PRiNT_ST========" << endl;
+    *fout << "========PRINT_ST========" << endl;
     map<string, LoanBookData*>::iterator mIter;
-    for(mIter = pMap.begin(); mIter != pMap.end(); mIter++) {
+    for(mIter = pMap.begin(); mIter != pMap.end(); mIter++) { // Print the book data from the data map
         *fout << mIter->second->getName() << "/" << mIter->second->getCode();
         if(mIter->second->getCode() == 0)
 			*fout << "00";
@@ -127,17 +128,19 @@ bool SelectionTree::printBookData(int bookCode) {
     }
     *fout << "========================" << endl << endl;
 
-    return true;
+    return true; // Return true to indicate successful printing
 }
 
 void SelectionTree::createSelTree(SelectionTreeNode* pCur, int treeHeight) {
 
+    // Base case: If the tree height is 0, create a new heap for the current node
     if (treeHeight == 0) {
         LoanBookHeap* newHeap = new LoanBookHeap;
         pCur->setHeap(newHeap);
-        return; 
+        return;
     }
     
+    // Create left and right child nodes for the current node
     SelectionTreeNode* newLeftSelNode = new SelectionTreeNode();
     pCur->setLeftChild(newLeftSelNode);
     newLeftSelNode->setParent(pCur);
@@ -146,19 +149,20 @@ void SelectionTree::createSelTree(SelectionTreeNode* pCur, int treeHeight) {
     pCur->setRightChild(newRightSelNode);
     newRightSelNode->setParent(pCur);
     
+    // Recursively create the Selection Tree for the left and right children
     createSelTree(pCur->getLeftChild(), treeHeight-1);
     createSelTree(pCur->getRightChild(), treeHeight-1);
 }
 
 LoanBookHeapNode* SelectionTree::traversalHeap(LoanBookHeapNode* pHeap, SelectionTreeNode* pCur) {
 
-    if (pHeap == NULL) 
+    if (pHeap == NULL) // Base case: If the current heap node is NULL, return NULL
         return NULL;
 
-    traversalHeap(pHeap->getLeftChild(), pCur);
-    if(pHeap != NULL)
-        pCur->setDataMap(pHeap->getBookData()->getName(), pHeap->getBookData());
-    traversalHeap(pHeap->getRightChild(), pCur);
+    traversalHeap(pHeap->getLeftChild(), pCur); // Traverse the left subtree of the heap  
+    if(pHeap != NULL) // Populate the data map of the current SelectionTreeNode with book data from the heap
+        pCur->setDataMap(pHeap->getBookData()->getName(), pHeap->getBookData());    
+    traversalHeap(pHeap->getRightChild(), pCur); // Traverse the right subtree of the heap
 
     return pHeap;
 }
