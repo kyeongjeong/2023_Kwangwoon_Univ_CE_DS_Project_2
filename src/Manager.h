@@ -34,7 +34,7 @@ public:
 	bool SEARCH_BP(string name, string start, string end);
 
 	bool PRINT_BP();
-	bool PRINT_ST();
+	bool PRINT_ST(int code);
 
 	bool DELETE();
 

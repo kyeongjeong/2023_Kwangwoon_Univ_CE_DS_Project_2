@@ -3,29 +3,32 @@
 
 bool BpTree::Insert(LoanBookData* newData) {
 
- 	if(root == NULL) {
+ 	if(root == NULL) { // if there is no data in B+ tree
 
-		BpTreeDataNode* dataNode = new BpTreeDataNode();
-		dataNode->insertDataMap(newData->getName(), newData);
-		root = dataNode;
+		BpTreeDataNode* dataNode = new BpTreeDataNode(); // create new bptreenode
+		dataNode->insertDataMap(newData->getName(), newData); // insert data in bptreenode
+		root = dataNode; // set root
 		return true;
 	}
 
-	BpTreeNode* pCur = root;
+	BpTreeNode *pCur = root, *pPar;
 	map <string, LoanBookData*>::iterator mIter;
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
 	while(!pCur->isDataNode())
-		pCur = pCur->getIndexMap()->begin()->second;
+		pCur = pCur->getIndexMap()->begin()->second; // move to datanode
+	pPar = pCur;
 	
-	while(pCur != NULL) {
-
-		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
+	while(pCur != NULL) { // traversal data node
+		
+		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) { // traversal data map
 
 			if(mIter->first == newData->getName()) {
 					
 					mIter->second->updateCount();
 
+					// check loan-available
+					// if not, delete data from B+ tree
 					if((mIter->second->getCode() == 000) && (mIter->second->getLoanCount() == 3)) {
 						Delete(pCur, mIter->first);
 						return false;
@@ -64,24 +67,38 @@ bool BpTree::Insert(LoanBookData* newData) {
 		pCur = pCur->getNext();
 	}
 
-	if(root->isDataNode()) {
+	if(root->isDataNode()) { // if there is no index node
 
-		root->insertDataMap(newData->getName(), newData);
-		if(excessDataNode(root))
+		root->insertDataMap(newData->getName(), newData); // insert data to root(data node)
+		if(excessDataNode(root)) // check whether a data node needs to split
 			splitDataNode(root);
 		return true;
 	}
-	else {
+	else { // it there are index node
 
-		pCur = searchDataNode(newData->getName());
-		pCur->insertDataMap(newData->getName(), newData);
+		pCur = searchDataNode(newData->getName()); // find location to insert
+		
+		if(pCur == NULL) {
+			BpTreeDataNode* dataNode = new BpTreeDataNode(); // create new bptreenode
+			dataNode->insertDataMap(newData->getName(), newData); // insert data in bptreenode
+			
+			pPar = pPar->getParent();
+			pPar->setMostLeftChild(dataNode); // set new node to mostleftchild of paraent node
+			dataNode->setParent(pPar);
+			
+			pPar->getIndexMap()->begin()->second->setPrev(dataNode);
+			dataNode->setNext(pPar->getIndexMap()->begin()->second);
+			pCur = dataNode;
+		}
+		else
+			pCur->insertDataMap(newData->getName(), newData); // insert data to that data node
 	
-		if(excessDataNode(pCur))
+		if(excessDataNode(pCur)) // check whether a data node needs to split
 			splitDataNode(pCur);
 		
-		pCur = pCur->getParent();
+		pCur = pCur->getParent(); // move to parent index node
 		while(pCur != NULL) {
-			if(excessIndexNode(pCur))
+			if(excessIndexNode(pCur)) // // check whether a index node needs to split
 				splitIndexNode(pCur);
 			pCur = pCur->getParent();
 		}
@@ -91,19 +108,18 @@ bool BpTree::Insert(LoanBookData* newData) {
 }
 
 bool BpTree::excessDataNode(BpTreeNode* pDataNode) {
-	if (pDataNode->getDataMap()->size() > order - 1) return true;//order is equal to the number of elements 
+	if (pDataNode->getDataMap()->size() > order - 1) return true; // order is equal to the number of elements 
 	else return false;
 }
 
 bool BpTree::excessIndexNode(BpTreeNode* pIndexNode) {
-	if (pIndexNode->getIndexMap()->size() > order - 1) return true;//order is equal to the number of elements 
+	if (pIndexNode->getIndexMap()->size() > order - 1) return true; // order is equal to the number of elements 
 	else return false;
 }
 
 void BpTree::splitDataNode(BpTreeNode* pDataNode) {
 	
-	int splitKey = ceil((order-1)/2.0);
-	int count = 0;
+	int splitKey = ceil((order-1)/2.0); // The location (key value) to split the data node
 	BpTreeDataNode* newDataNode = new BpTreeDataNode();
 	BpTreeIndexNode *newIndexNode;
 	BpTreeNode *indexNode;
@@ -111,17 +127,17 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
 	map <string, LoanBookData*>::iterator mIter2;
 	map<string, BpTreeNode *>::iterator iIter;
 	
-	mIter = pDataNode->getDataMap()->begin();
+	mIter = pDataNode->getDataMap()->begin(); // traversal data map
 	for(int i = 0; i < splitKey; i++) {
 
-		newDataNode->insertDataMap(mIter->first, mIter->second);
+		newDataNode->insertDataMap(mIter->first, mIter->second); // create new data node
 		mIter2 = mIter;
 		mIter++;
-		pDataNode->deleteMap(mIter2->first);
+		pDataNode->deleteMap(mIter2->first); // delete the iterator data in map
 	}
-	string pKey = mIter->first;
+	string pKey = mIter->first; // first key element of pDataNode
 
-	if(pDataNode->getParent() == NULL) {
+	if(pDataNode->getParent() == NULL) { // if there is no index node
 
 		newIndexNode = new BpTreeIndexNode();
 		root = newIndexNode;
@@ -164,7 +180,6 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
 void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
 	
 	int splitKey = ceil((order-1)/2.0);
-	int count = 0;
 	BpTreeIndexNode* newIndexNode = new BpTreeIndexNode();
 	BpTreeNode *upIndexNode;
 	map <string, BpTreeNode*>::iterator iIter;
@@ -248,6 +263,10 @@ BpTreeNode* BpTree::searchDataNode(string name) {
 		pCur = pCur->getIndexMap()->begin()->second;
 	pNext = pCur;
 
+	// 이거 위로 옮기기
+	if((pCur != root) && (pCur != pCur->getParent()->getMostLeftChild()) && (name < pCur->getDataMap()->begin()->first))
+		return NULL;
+
 	while(pCur != NULL) {
 
 		if(pCur->getNext() == NULL)
@@ -271,6 +290,8 @@ bool BpTree::searchBook(string name, bool isPrint) {
 	bool isBreak = false;
 
 	pCur = searchDataNode(name);
+	if(pCur == NULL)
+		return false;
 	for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
 
 		if(mIter->first == name) {
@@ -314,6 +335,8 @@ bool BpTree::searchRange(string start, string end) {
 	string bookName, firstWord;
 	
 	pCur = searchDataNode(start);
+	if(pCur == NULL)
+		return false;
 	while(pCur != NULL) {
 
 		for(mIter = pCur->getDataMap()->begin(); mIter != pCur->getDataMap()->end(); mIter++) {
@@ -331,8 +354,9 @@ bool BpTree::searchRange(string start, string end) {
 	}
 	if(isPrint == false)
 		return isPrint;
-
+	
 	pCur = searchDataNode(start);
+
 	*fout << "========SEARCH_BP========" << endl;
 	while(pCur != NULL) {
 

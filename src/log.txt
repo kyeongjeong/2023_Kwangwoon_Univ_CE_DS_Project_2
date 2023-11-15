@@ -34,75 +34,289 @@ zzz/400/sdfkj/2012/2
 ========SEARCH_BP========
 aaa/500/lkjio/2023/1
 =========================
-이동 경로(aaa) -> bbb ddd  -> fff  -> hhh  -> mmm 
+이동 경로(aaa) -> bbb ddd  -> fff  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 ccc/600/lddi /1983/0
 =========================
-이동 경로(bbb) -> bbb ddd  -> fff  -> hhh  -> mmm 
+이동 경로(bbb) -> bbb ddd  -> fff  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 eee/100/fgh/2008/0
 =========================
-이동 경로(ddd) -> bbb ddd  -> fff  -> hhh  -> mmm 
+이동 경로(ddd) -> bbb ddd  -> fff  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 fff/400/ariel/1654/1
 =========================
-이동 경로(fff) -> ggg  -> fff  -> hhh  -> mmm 
+이동 경로(fff) -> ggg  -> fff  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 ggg/200/werg/2002/0
 =========================
-이동 경로(ggg) -> ggg  -> fff  -> hhh  -> mmm 
+이동 경로(ggg) -> ggg  -> fff  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 hhh/300/poilk/2015/2
 =========================
-이동 경로(hhh) -> iii  -> kkk  -> hhh  -> mmm 
+이동 경로(hhh) -> iii  -> kkk  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 jjj/000/zvxhh/1976/0
 =========================
-이동 경로(iii) -> iii  -> kkk  -> hhh  -> mmm 
+이동 경로(iii) -> iii  -> kkk  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 kkk/500/afxm/2005/0
 =========================
-이동 경로(kkk) -> lll  -> kkk  -> hhh  -> mmm 
+이동 경로(kkk) -> lll  -> kkk  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 mmm/400/ariel/1654/1
 =========================
-이동 경로(mmm) -> nnn  -> ooo  -> qqq uuu  -> mmm 
+이동 경로(lll) -> lll  -> kkk  -> hhh  -> nnn 
 
 ========SEARCH_BP========
 nnn/000/sdff/1958/0
 =========================
-이동 경로(nnn) -> nnn  -> ooo  -> qqq uuu  -> mmm 
+이동 경로(nnn) -> ooo  -> ppp  -> rrr vvv  -> nnn 
 
 ========SEARCH_BP========
 qqq/500/lkjio/2023/1
 =========================
-이동 경로(qqq) -> rrr  -> sss  -> qqq uuu  -> mmm 
+이동 경로(qqq) -> qqq  -> ppp  -> rrr vvv  -> nnn 
 
 ========SEARCH_BP========
 rrr/700/mnbvv/1993/0
 =========================
-이동 경로(rrr) -> rrr  -> sss  -> qqq uuu  -> mmm 
+이동 경로(rrr) -> sss  -> ttt  -> rrr vvv  -> nnn 
 
 ========SEARCH_BP========
 uuu/600/lddi /1983/0
 =========================
-이동 경로(uuu) -> vvv  -> www  -> qqq uuu  -> mmm 
+이동 경로(uuu) -> uuu  -> ttt  -> rrr vvv  -> nnn 
 
 ========SEARCH_BP========
 vvv/200/ysmxd/2019/1
 =========================
-이동 경로(vvv) -> vvv  -> www  -> qqq uuu  -> mmm 
+이동 경로(vvv) -> www  -> xxx  -> rrr vvv  -> nnn 
 
 ========SEARCH_BP========
 zzz/400/sdfkj/2012/2
 =========================
-이동 경로(yyy) -> xxx yyy  -> www  -> qqq uuu  -> mmm 
+이동 경로(yyy) -> yyy  -> xxx  -> rrr vvv  -> nnn 
+
+=========ADD=========
+aaa/500/lkjio/2023
+======================
+
+========PRINT_BP========
+bbb/000/sdff/1958/0
+ccc/600/lddi /1983/0
+ddd/700/mnbvv/1993/0
+eee/100/fgh/2008/0
+fff/400/ariel/1654/1
+ggg/200/werg/2002/0
+hhh/300/poilk/2015/2
+iii/400/oiur/1885/3
+jjj/000/zvxhh/1976/0
+kkk/500/afxm/2005/0
+lll/200/ysmxd/2019/1
+mmm/400/ariel/1654/1
+nnn/000/sdff/1958/0
+ooo/400/sdfkj/2012/2
+ppp/200/werg/2002/0
+qqq/500/lkjio/2023/1
+rrr/700/mnbvv/1993/0
+sss/300/poilk/2015/2
+ttt/100/fgh/2008/0
+uuu/600/lddi /1983/0
+vvv/200/ysmxd/2019/1
+www/500/afxm/2005/0
+xxx/400/oiur/1885/3
+yyy/000/zvxhh/1976/0
+zzz/400/sdfkj/2012/2
+========================
+
+=========ERROR=========
+300
+=======================
+
+========SEARCH_BP========
+ccc/600/lddi /1983/0
+=========================
+이동 경로(bbb) -> bbb ddd  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+eee/100/fgh/2008/0
+=========================
+이동 경로(ddd) -> bbb ddd  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+fff/400/ariel/1654/1
+=========================
+이동 경로(fff) -> ggg  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+ggg/200/werg/2002/0
+=========================
+이동 경로(ggg) -> ggg  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+hhh/300/poilk/2015/2
+=========================
+이동 경로(hhh) -> iii  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+jjj/000/zvxhh/1976/0
+=========================
+이동 경로(iii) -> iii  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+kkk/500/afxm/2005/0
+=========================
+이동 경로(kkk) -> lll  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+mmm/400/ariel/1654/1
+=========================
+이동 경로(lll) -> lll  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+nnn/000/sdff/1958/0
+=========================
+이동 경로(nnn) -> ooo  -> ppp  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+qqq/500/lkjio/2023/1
+=========================
+이동 경로(qqq) -> qqq  -> ppp  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+rrr/700/mnbvv/1993/0
+=========================
+이동 경로(rrr) -> sss  -> ttt  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+uuu/600/lddi /1983/0
+=========================
+이동 경로(uuu) -> uuu  -> ttt  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+vvv/200/ysmxd/2019/1
+=========================
+이동 경로(vvv) -> www  -> xxx  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+zzz/400/sdfkj/2012/2
+=========================
+이동 경로(yyy) -> yyy  -> xxx  -> rrr vvv  -> nnn 
+
+=========ADD=========
+anew/500/lkjio/2023
+======================
+
+========PRINT_BP========
+anew/500/lkjio/2023/0
+bbb/000/sdff/1958/0
+ccc/600/lddi /1983/0
+ddd/700/mnbvv/1993/0
+eee/100/fgh/2008/0
+fff/400/ariel/1654/1
+ggg/200/werg/2002/0
+hhh/300/poilk/2015/2
+iii/400/oiur/1885/3
+jjj/000/zvxhh/1976/0
+kkk/500/afxm/2005/0
+lll/200/ysmxd/2019/1
+mmm/400/ariel/1654/1
+nnn/000/sdff/1958/0
+ooo/400/sdfkj/2012/2
+ppp/200/werg/2002/0
+qqq/500/lkjio/2023/1
+rrr/700/mnbvv/1993/0
+sss/300/poilk/2015/2
+ttt/100/fgh/2008/0
+uuu/600/lddi /1983/0
+vvv/200/ysmxd/2019/1
+www/500/afxm/2005/0
+xxx/400/oiur/1885/3
+yyy/000/zvxhh/1976/0
+zzz/400/sdfkj/2012/2
+========================
+
+========SEARCH_BP========
+anew/500/lkjio/2023/0
+=========================
+이동 경로(anew) -> bbb ddd  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+ccc/600/lddi /1983/0
+=========================
+이동 경로(bbb) -> bbb ddd  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+eee/100/fgh/2008/0
+=========================
+이동 경로(ddd) -> bbb ddd  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+fff/400/ariel/1654/1
+=========================
+이동 경로(fff) -> ggg  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+ggg/200/werg/2002/0
+=========================
+이동 경로(ggg) -> ggg  -> fff  -> hhh  -> nnn 
+
+========SEARCH_BP========
+hhh/300/poilk/2015/2
+=========================
+이동 경로(hhh) -> iii  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+jjj/000/zvxhh/1976/0
+=========================
+이동 경로(iii) -> iii  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+kkk/500/afxm/2005/0
+=========================
+이동 경로(kkk) -> lll  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+mmm/400/ariel/1654/1
+=========================
+이동 경로(lll) -> lll  -> kkk  -> hhh  -> nnn 
+
+========SEARCH_BP========
+nnn/000/sdff/1958/0
+=========================
+이동 경로(nnn) -> ooo  -> ppp  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+qqq/500/lkjio/2023/1
+=========================
+이동 경로(qqq) -> qqq  -> ppp  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+rrr/700/mnbvv/1993/0
+=========================
+이동 경로(rrr) -> sss  -> ttt  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+uuu/600/lddi /1983/0
+=========================
+이동 경로(uuu) -> uuu  -> ttt  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+vvv/200/ysmxd/2019/1
+=========================
+이동 경로(vvv) -> www  -> xxx  -> rrr vvv  -> nnn 
+
+========SEARCH_BP========
+zzz/400/sdfkj/2012/2
+=========================
+이동 경로(yyy) -> yyy  -> xxx  -> rrr vvv  -> nnn 
 
