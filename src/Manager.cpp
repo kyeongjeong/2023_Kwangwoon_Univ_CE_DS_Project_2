@@ -80,8 +80,8 @@ void Manager::run(const char* command)
 			
 			int code;
 			if (tokens.size() == 2) {
-				code = stoi(tokens[0]);
-				if((tokens.size() != 1) || (!PRINT_ST(code))) // fail to PRINT_ST
+				code = stoi(tokens[1]);
+				if((tokens.size() != 2) || (!PRINT_ST(code))) // fail to PRINT_ST
 					printErrorCode(500);
 			}
 			else // if there are too less or too many parameters...
@@ -229,7 +229,7 @@ bool Manager::PRINT_ST(int code)
 		return false;
 	
 	// if there is no data in selection tree
-	if(stree->getRoot() == NULL)
+	if((stree->getRoot() == NULL) || (stree->getRoot()->getBookData() == NULL))
 		return false;
 	
 	// fail to find and print book data
@@ -242,7 +242,7 @@ bool Manager::PRINT_ST(int code)
 bool Manager::DELETE() 
 {
 	// if there is no data in selection tree
-	if(stree->getRoot() == NULL)
+	if((stree->getRoot() == NULL) || (stree->getRoot()->getBookData() == NULL))
 		return false;
 	
 	// fail to delete data in selection tree

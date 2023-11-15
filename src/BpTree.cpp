@@ -83,10 +83,10 @@ bool BpTree::Insert(LoanBookData* newData) {
 			dataNode->insertDataMap(newData->getName(), newData); // insert data in bptreenode
 			
 			pPar = pPar->getParent();
-			pPar->setMostLeftChild(dataNode); // set new node to mostleftchild of paraent node
+			pPar->setMostLeftChild(dataNode); // set new node to mostleftchild of parent node
 			dataNode->setParent(pPar);
 			
-			pPar->getIndexMap()->begin()->second->setPrev(dataNode);
+			pPar->getIndexMap()->begin()->second->setPrev(dataNode); // connect next, prev node
 			dataNode->setNext(pPar->getIndexMap()->begin()->second);
 			pCur = dataNode;
 		}
@@ -139,22 +139,22 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
 
 	if(pDataNode->getParent() == NULL) { // if there is no index node
 
-		newIndexNode = new BpTreeIndexNode();
-		root = newIndexNode;
-		newIndexNode->insertIndexMap(pKey, pDataNode);	
-		newIndexNode->setMostLeftChild(newDataNode);
+		newIndexNode = new BpTreeIndexNode(); // create new index node
+		root = newIndexNode; // set index node as root
+		newIndexNode->insertIndexMap(pKey, pDataNode);	// insert data in index node map
+		newIndexNode->setMostLeftChild(newDataNode); // set data node as mostleftchild of index node
 
-		newDataNode->setParent(newIndexNode);
+		newDataNode->setParent(newIndexNode); // set parent, child
 		pDataNode->setParent(newIndexNode);
 	}
 	else {
 
 		indexNode = pDataNode->getParent();
-		indexNode->insertIndexMap(pKey, pDataNode);
+		indexNode->insertIndexMap(pKey, pDataNode); // insert data into parent
 		
-		iIter = indexNode->getIndexMap()->begin();
+		iIter = indexNode->getIndexMap()->begin(); 
 		if (newDataNode->getDataMap()->begin()->first < iIter->first)
-			indexNode->setMostLeftChild(newDataNode);
+			indexNode->setMostLeftChild(newDataNode); 
 
 		for (; iIter != indexNode->getIndexMap()->end(); iIter++) { 
 	 	
@@ -399,7 +399,7 @@ bool BpTree::printBP() {
 	return true;	
 }
 
-bool BpTree::Delete(BpTreeNode* dNode, string dName) {
+bool BpTree::Delete(BpTreeNode* dNode, string dName) { 
 
 	bool isInIndex = false;
 	BpTreeNode *pCur, *pIndex, *pSib, *pSwap;
@@ -419,10 +419,10 @@ bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 	}
 	pCur = dNode;
 
-	// 1. index에 존재 x
+	// 1. dName does not exist in index node
 	if(isInIndex == false) {
 
-		if(dNode->getDataMap()->size() == 1) { // 1.1. dNode->size == 1(dNode가 가장 왼쪽의 mostLeftChild)
+		if(dNode->getDataMap()->size() == 1) { // 1.1. dNode->size == 1(dNode is mostLeftChild in whole B+ tree)
 
 			dNode->getParent()->setMostLeftChild(NULL);
 			if(dNode->getNext() != NULL)
@@ -434,8 +434,8 @@ bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 		return true;
 	}
 
-	// 2. index에 존재
-	if(dNode->getDataMap()->size() > 1) { // 2.1. underflow가 발생하지 x
+	// 2. dName exists in index node
+	if(dNode->getDataMap()->size() > 1) { // 2.1. underflow x
 
 		mIter = dNode->getDataMap()->begin();
 		if(mIter->first == dName)
@@ -449,8 +449,8 @@ bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 		return true;
 	}
 	
-	// 2.2. underflow 발생
-	// 2.2.1. 재배치 o
+	// 2.2. underflow o
+	// 2.2.1. reassignment o
 	if(((dNode->getNext() != NULL) && (dNode->getNext()->getParent() == dNode->getParent()) && (dNode->getNext()->getDataMap()->size() > 1)) || ((dNode->getPrev() != NULL) && (dNode->getPrev()->getParent() == dNode->getParent()) && (dNode->getPrev()->getDataMap()->size() > 1))) {
 		
 		string swapName, upName;
@@ -506,7 +506,7 @@ bool BpTree::Delete(BpTreeNode* dNode, string dName) {
 		return false;
 	}
 
-	// 2.2.2. 재배치 x(병합)
+	// 2.2.2. reassignment x(merge)
 	if((dNode->getNext() != NULL) && (dNode->getNext()->getParent() == dNode->getParent()) && (dNode->getNext()->getDataMap()->size() == 1)) {
 		
 		pSib = pCur->getNext();

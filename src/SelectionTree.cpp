@@ -45,6 +45,7 @@ bool SelectionTree::Insert(LoanBookData* newData) {
 bool SelectionTree::Delete() {
 
     int tempNum = root->getBookData()->getCode();
+    string tempStr = root->getBookData()->getName();
     int direction[3] = {((root->getBookData()->getCode() / 100) / 4), (((root->getBookData()->getCode() / 100) % 4) / 2), (((root->getBookData()->getCode() / 100) % 4) % 2)};
     SelectionTreeNode* pCur = root;
     for (int i = 0; i < 3; i++) {
@@ -60,9 +61,11 @@ bool SelectionTree::Delete() {
             return false;
     }
 
-    LoanBookHeap* tempHeap = pCur->getHeap();
-    tempHeap->heapifyDown(tempHeap->getRoot());
-    pCur->setBookData(tempHeap->getRoot()->getBookData());
+    pCur->getHeap()->heapifyDown(pCur->getHeap()->getRoot());
+    // string newRoot;
+    // if(pCur->getHeap()->getRoot()->getBookData() != NULL)
+    //     newRoot = pCur->getHeap()->getRoot()->getBookData()->getName();
+    pCur->setBookData(pCur->getHeap()->getRoot()->getBookData());
 
     while(pCur->getParent() != NULL) {
 
@@ -86,7 +89,7 @@ bool SelectionTree::Delete() {
         }
     }
     // if(root->getBookData() != NULL)
-    //     cout << root->getBookData()->getName() << endl;
+    //     cout << tempStr << " delete -> new root: "<< root->getBookData()->getName() << endl;
     return true;
 }
 

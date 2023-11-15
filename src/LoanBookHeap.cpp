@@ -21,7 +21,7 @@ void LoanBookHeap::heapifyUp(LoanBookHeapNode* pN) {
 
 void LoanBookHeap::heapifyDown(LoanBookHeapNode* pN) {
 
-    if((pN->getLeftChild() == NULL) || (pN->getRightChild() == NULL)) {
+    if((pN->getLeftChild() == NULL) && (pN->getRightChild() == NULL)) {
         pN->setBookData(NULL);
         return;
     }
