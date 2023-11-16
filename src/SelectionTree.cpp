@@ -41,8 +41,6 @@ bool SelectionTree::Insert(LoanBookData* newData) {
 
 bool SelectionTree::Delete() {
 
-    //
-    string tempStr = root->getBookData()->getName();
     // Determine the traversal direction based on the code of the root node
     int direction[3] = {((root->getBookData()->getCode() / 100) / 4), (((root->getBookData()->getCode() / 100) % 4) / 2), (((root->getBookData()->getCode() / 100) % 4) % 2)};
     SelectionTreeNode* pCur = root;
@@ -83,9 +81,6 @@ bool SelectionTree::Delete() {
             pCur->setBookData(tempData);
         }
     }
-    //
-    if(root->getBookData() != NULL)
-        cout << tempStr << " delete -> new root: "<< root->getBookData()->getName() << endl;
     return true;
 }
 

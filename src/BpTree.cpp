@@ -276,8 +276,6 @@ bool BpTree::searchBook(string name, bool isPrint) {
 	BpTreeNode* pCur; // Pointer to the current node
     map<string, LoanBookData*>::iterator mIter; // Iterator for traversing the data map
     map<string, BpTreeNode*>::iterator iIter; // Iterator for traversing the index map
-	//
-	bool isBreak = false;
 
 	pCur = searchDataNode(name); // Find the data node containing the search 'name'
     if (pCur == NULL)
@@ -294,28 +292,11 @@ bool BpTree::searchBook(string name, bool isPrint) {
 					*fout << "00";
 				*fout << "/" << mIter->second->getAuthor() << "/" << mIter->second->getYear() << "/" << mIter->second->getLoanCount() << endl;
 				*fout << "=========================" << endl;
-				// return true;
+				return true;
 			}
-			//
-			isBreak = true;
 		}
 	}
-	// return false; // Return false if the search 'name' is not found in the current data node
-	//
-	if(isBreak == false)
-		return isBreak;
-
-	*fout << "이동 경로(" << pCur->getDataMap()->begin()->first << ")";
-	while(pCur->getParent() != NULL) {
-
-		pCur = pCur->getParent();
-		*fout << " -> ";
-		int size = pCur->getIndexMap()->size();
-		for(iIter = pCur->getIndexMap()->begin(); iIter != pCur->getIndexMap()->end(); iIter++)
-			*fout << iIter->first << " ";
-	}
-	*fout << endl << endl;
-	return isBreak;
+	return false;
 }
 
 bool BpTree::searchRange(string start, string end) {
