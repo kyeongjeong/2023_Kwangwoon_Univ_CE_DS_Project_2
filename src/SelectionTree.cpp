@@ -42,7 +42,7 @@ bool SelectionTree::Insert(LoanBookData* newData) {
 
 bool SelectionTree::Delete() {
 
-    int tempNum = root->getBookData()->getCode();  // Save the code and name of the root node for reference
+    //
     string tempStr = root->getBookData()->getName();
     // Determine the traversal direction based on the code of the root node
     int direction[3] = {((root->getBookData()->getCode() / 100) / 4), (((root->getBookData()->getCode() / 100) % 4) / 2), (((root->getBookData()->getCode() / 100) % 4) % 2)};
@@ -61,9 +61,6 @@ bool SelectionTree::Delete() {
     }
 
     pCur->getHeap()->heapifyDown(pCur->getHeap()->getRoot()); // Perform heapify-down operation after deletion
-    string newRoot;
-    if(pCur->getHeap()->getRoot()->getBookData() != NULL)
-        newRoot = pCur->getHeap()->getRoot()->getBookData()->getName();
     pCur->setBookData(pCur->getHeap()->getRoot()->getBookData()); // Update the book data of the current node
 
     while(pCur->getParent() != NULL) { // Update the book data of parent nodes along the path to the root
@@ -87,6 +84,7 @@ bool SelectionTree::Delete() {
             pCur->setBookData(tempData);
         }
     }
+    //
     if(root->getBookData() != NULL)
         cout << tempStr << " delete -> new root: "<< root->getBookData()->getName() << endl;
     return true;

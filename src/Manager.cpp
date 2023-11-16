@@ -81,7 +81,7 @@ void Manager::run(const char* command)
 			int code;
 			if (tokens.size() == 2) {
 				code = stoi(tokens[1]);
-				if((tokens.size() != 2) || (!PRINT_ST(code))) // fail to PRINT_ST
+				if(!PRINT_ST(code)) // fail to PRINT_ST
 					printErrorCode(500);
 			}
 			else // if there are too less or too many parameters...
@@ -111,7 +111,7 @@ void Manager::run(const char* command)
 bool Manager::LOAD()
 {
 	ifstream floan;
-    floan.open("loan_book.txt"); // open loan_book file
+    floan.open("loan_book2.txt"); // open loan_book file
 	if(!floan) // file open fail 
 		return false;
 
@@ -198,7 +198,9 @@ bool Manager::ADD(string name, int code, string author, int year)
 
 bool Manager::SEARCH_BP(string name, string start, string end) 
 {
-	
+	if(bptree->getRoot() == NULL)
+		return false;
+
     if (!name.empty() && start.empty() && end.empty()) {         
 		if (!bptree->searchBook(name, true))
 			return false;
