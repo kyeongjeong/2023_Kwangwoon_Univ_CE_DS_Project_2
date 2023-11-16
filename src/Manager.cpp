@@ -111,7 +111,7 @@ void Manager::run(const char* command)
 bool Manager::LOAD()
 {
 	ifstream floan;
-    floan.open("loan_book2.txt"); // open loan_book file
+    floan.open("loan_book.txt"); // open loan_book file
 	if(!floan) // file open fail 
 		return false;
 

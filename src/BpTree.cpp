@@ -13,6 +13,7 @@ bool BpTree::Insert(LoanBookData* newData) {
 
 	BpTreeNode *pCur = root, *pPar;
 	map <string, LoanBookData*>::iterator mIter;
+
 	while(pCur->getMostLeftChild() != NULL) 
 		pCur = pCur->getMostLeftChild();
 	while(!pCur->isDataNode())
@@ -97,11 +98,8 @@ bool BpTree::Insert(LoanBookData* newData) {
 			splitDataNode(pCur);
 		
 		pCur = pCur->getParent(); // move to parent index node
-		while(pCur != NULL) {
-			if(excessIndexNode(pCur)) // // check whether a index node needs to split
+		if(excessIndexNode(pCur)) // // check whether a index node needs to split
 				splitIndexNode(pCur);
-			pCur = pCur->getParent();
-		}
 		return true;
 	}
 	return false;
@@ -225,11 +223,6 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
             upIndexNode->setMostLeftChild(newIndexNode); // Update the most left child of upIndexNode if needed
 
         for(; iIter != upIndexNode->getIndexMap()->end(); iIter++) {
-
-            if (iIter == upIndexNode->getIndexMap()->end()) {
-                iIter->second = pIndexNode; // Update the corresponding child of upIndexNode
-                break;
-            }
 
             iIter2 = iIter++;
             if (nKey < iIter->first) {

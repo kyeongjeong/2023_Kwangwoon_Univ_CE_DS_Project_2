@@ -36,7 +36,6 @@ bool SelectionTree::Insert(LoanBookData* newData) {
         if((pCur->getBookData() == NULL) || (childData->getName() < pCur->getBookData()->getName()))
             pCur->setBookData(childData); // Update the book data of the parent node with the smaller name or if it is null
     }
-    // cout << root->getBookData()->getName() << endl;
     return true; // Return true to indicate successful insertion
 }
 
